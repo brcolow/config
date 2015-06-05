@@ -1,0 +1,34 @@
+set ignorecase
+set smartcase
+set showmode
+set undolevels=10000
+set wrapscan
+set hlsearch
+set history=50
+set visualbell
+set nrformats-=octal
+set timeoutlen=1000
+
+inoremap jj <esc>
+vnoremap jj <esc>
+
+nnoremap Y y$
+nnoremap <c-l> :nohlsearch<cr>
+
+" Find IntelliJ IDEA editor actions here:
+" https://github.com/JetBrains/intellij-community/blob/master/platform/platform-resources-en/src/messages/ActionsBundle.properties
+
+nnoremap gt :action NextTab<cr>
+nnoremap gT :action GotoTest<cr>
+nnoremap gi :action GotoImplementation<cr>
+nnoremap gf :action GotoFile<cr>
+nnoremap gc :action GotoClass<cr>
+nnoremap gc :action CommentByBlockComment<cr>
+
+nnoremap dd :action GenerateJavadoc<cr>
+nnoremap di :action ImplementMethods<cr>
+
+nnoremap ]] :action MethodDown<cr>
+nnoremap [[ :action MethodUp<cr>
+
+nnoremap ,n :action NewFile<cr>
