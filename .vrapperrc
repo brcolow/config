@@ -1,0 +1,51 @@
+" Bind Activate Editor to <Esc>
+
+set ignorecase
+set smartcase
+set incsearch
+set tabstop=4
+set shiftwidth=4
+
+nnoremap <c-l> :nohlsearch<cr>
+nnoremap Y y$
+inoremap jj <esc>
+
+eclipseaction eclipseopenresource org.eclipse.ui.navigate.openResource
+nnoremap <c-p> :eclipseopenresource<cr>
+
+eclipseaction eclipsefindref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
+nnoremap gr :eclipsefindref<cr>
+
+eclipseaction eclipsegotoimpl org.eclipse.jdt.ui.edit.text.java.open.implementation
+nnoremap gI :eclipsegotoimpl<cr>
+
+eclipseaction eclipsenextmember org.eclipse.jdt.ui.edit.text.java.goto.next.member
+nnoremap ]] :eclipsenextmember<cr>
+
+eclipseaction eclipseprevmember org.eclipse.jdt.ui.edit.text.java.goto.previous.member
+nnoremap [[ :eclipseprevmember<cr>
+
+eclipseuiaction eclipseshowdoc org.eclipse.ui.edit.text.showInformation
+nnoremap K :eclipseshowdoc<cr>
+
+" emulate justinmk's vim-gtfo (go to file terminal/file manager)
+
+" open file manager here (gof)
+eclipseaction openfmhere org.eclipse.ui.ide.showInSystemExplorer
+nnoremap gof :openfmhere<cr>
+
+" open terminal here (got)  (requires EasyShell plugin)
+eclipseaction opentermhere com.tetrade.eclipse.plugins.easyshell.command.shellOpen
+nnoremap got :opentermhere<cr>
+
+" gT: go to unit test case using MoreUnit
+eclipseaction gototest org.moreunit.core.commands.jumpCommand
+nnoremap gT :gototest<cr>
+
+set cleanindent
+set autochdir
+set contentassistmode
+
+" Setting gvim path allows use of :vim command to open gvim with the current file
+" Note Progra~2 expands to Program Files (x86)
+set gvimpath=C:\Progra~2\Vim\vim74\gvim.exe
