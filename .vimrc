@@ -39,8 +39,10 @@ set shiftwidth=4
 set expandtab
 set shiftround
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
-
-nnoremap <silent> <C-L> :nohlsearch<CR>
+set nowrap
+set linebreak
+set nolist
+set splitright
 
 if has('syntax') && !exists('g:syntax_on')
   syntax enable
@@ -64,11 +66,10 @@ let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|idea)$'
 Plug 'kien/ctrlp.vim'
 
-let g:syntastic_error_symbol = '✗'
+let g:syntastic_error_symbol = 'X'
 let g:syntastic_warning_symbol = '!'
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 Plug 'scrooloose/syntastic'
 
