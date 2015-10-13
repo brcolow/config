@@ -84,7 +84,7 @@ Plug 'majutsushi/tagbar'
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'inside/vim-search-pulse'
 let g:vim_search_pulse_mode = 'pattern'
