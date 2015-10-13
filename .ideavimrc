@@ -23,10 +23,10 @@ nnoremap gT :action GotoTest<cr>
 nnoremap gi :action GotoImplementation<cr>
 nnoremap gf :action GotoFile<cr>
 nnoremap gc :action GotoClass<cr>
-nnoremap gc :action CommentByBlockComment<cr>
 
-nnoremap dd :action GenerateJavadoc<cr>
-nnoremap di :action ImplementMethods<cr>
+nnoremap ydC :action CommentByBlockComment<cr>
+nnoremap ydd :action GenerateJavadoc<cr>
+nnoremap ydi :action ImplementMethods<cr>
 
 nnoremap ]] :action MethodDown<cr>
 nnoremap [[ :action MethodUp<cr>
