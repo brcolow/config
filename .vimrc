@@ -60,50 +60,63 @@ endif
 
 filetype plugin indent on
 
-call plug#begin('~/.vim/plugged')
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
 
-Plug 'tomasr/molokai'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'justinmk/vim-gtfo'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-classpath'
-Plug 'bling/vim-airline'
+silent! if call plug#begin('~/.vim/plugged')
 
-let g:EclimCompletionMethod = 'omnifunc'
-let g:deoplete#omni_patterns = {}
-let g:deoplete#omni_patterns.java = '[^. *\t]\.\w*'
-let g:deoplete#enable_at_startup = 1
-autocmd FileType java set omnifunc=javacomplete#Complete
+    Plug 'tomasr/molokai'
+    Plug 'ludovicchabant/vim-gutentags'
+    Plug 'justinmk/vim-gtfo'
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-classpath'
+    Plug 'bling/vim-airline'
 
-Plug 'Shougo/deoplete.nvim'
-Plug 'artur-shaik/vim-javacomplete2'
-Plug 'ajh17/VimCompletesMe'
+    " let g:deoplete#omni_patterns = {}
+    " let g:deoplete#omni_patterns.java = '[^. \t0-9]\.\w*'
+    let g:deoplete#enable_at_startup = 1
+    autocmd FileType java set omnifunc=javacomplete#Complete
 
-nmap <leader>t :TagbarToggle<CR>
-Plug 'majutsushi/tagbar'
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
+    let g:JavaComplete_MavenRepositoryDisable = 0
 
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'ajh17/VimCompletesMe'
 
-Plug 'inside/vim-search-pulse'
-let g:vim_search_pulse_mode = 'pattern'
-let g:vim_search_pulse_disable_auto_mappings = 1
-let g:vim_search_pulse_color_list = ["red", "white"]
-let g:vim_search_pulse_duration = 200
-nmap n n<Plug>Pulse
-nmap N N<Plug>Pulse
+    Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+    nmap <leader>t :TagbarToggle<CR>
 
-Plug 'mhinz/vim-randomtag'
+    let g:ctrlp_map = '<c-p>'
+    let g:ctrlp_cmd = 'CtrlP'
+    Plug 'ctrlpvim/ctrlp.vim'
 
-Plug 'kana/vim-textobj-user'
-" (l)ine
-Plug 'kana/vim-textobj-line'
-" (f)unction / method
-Plug 'kana/vim-textobj-function'
-"(a)rgument
-Plug 'gaving/vim-textobj-argument'
-call plug#end()
+    Plug 'benekastah/neomake'
+    let g:neomake_java_enabled_makers = ['javac']
+    nnoremap <leader>b :Neomake<cr>
+
+    Plug 'inside/vim-search-pulse'
+    let g:vim_search_pulse_mode = 'pattern'
+    let g:vim_search_pulse_disable_auto_mappings = 1
+    let g:vim_search_pulse_color_list = ["red", "white"]
+    let g:vim_search_pulse_duration = 200
+    nmap n n<Plug>Pulse
+    nmap N N<Plug>Pulse
+
+    Plug 'mhinz/vim-randomtag'
+
+    Plug 'kana/vim-textobj-user'
+    " (l)ine
+    Plug 'kana/vim-textobj-line'
+    " (f)unction / method
+    Plug 'kana/vim-textobj-function', { 'for': ['cpp', 'c', 'java', 'vim' ] }
+    " (a)rgument
+    Plug 'gaving/vim-textobj-argument'
+    " (u)rl
+    Plug 'mattn/vim-textobj-url'
+    call plug#end()
+endif
 
 let g:java_highlight_all = 1
 let g:java_highlight_debug = 1
@@ -118,13 +131,23 @@ nnoremap <leader>c :e $MYVIMRC<cr>
 " Open help files in new tab
 autocmd BufEnter *.txt if &buftype == 'help' | silent wincmd T | endif
 
-autocmd FileType java nnoremap <buffer> <leader>t :JUnitFindTest<cr>
-autocmd FileType java nnoremap <buffer> <leader>i :JavaImport<cr>
-autocmd FileType java nnoremap <buffer> <leader>o :JavaImportOrganize<cr>
-autocmd FileType java nnoremap <buffer> <leader>r :JavaRename 
-autocmd FileType java nnoremap <buffer> <leader>m :JavaMove 
-autocmd FileType java nnoremap <buffer> <leader>d :JavaDelegate<cr>
-autocmd FileType java nnoremap <buffer> <leader>y :JavaHierarchy<cr>
-autocmd FileType java nnoremap <buffer> <leader>s :JavaImpl<cr>
-autocmd FileType java nnoremap <buffer> <leader>c :JavaCorrect<cr>
-autocmd FileType java nnoremap <buffer> <leader>f :JavaFormat<cr>
+if eclim#EclimAvailable()
+    let g:EclimCompletionMethod = 'omnifunc'
+    autocmd FileType java nnoremap <buffer> <leader>t :JUnitFindTest<cr>
+    autocmd FileType java nnoremap <buffer> <leader>i :JavaImport<cr>
+    autocmd FileType java nnoremap <buffer> <leader>o :JavaImportOrganize<cr>
+    autocmd FileType java nnoremap <buffer> <leader>r :JavaRename 
+    autocmd FileType java nnoremap <buffer> <leader>m :JavaMove 
+    autocmd FileType java nnoremap <buffer> <leader>d :JavaDelegate<cr>
+    autocmd FileType java nnoremap <buffer> <leader>y :JavaHierarchy<cr>
+    autocmd FileType java nnoremap <buffer> <leader>s :JavaImpl<cr>
+    autocmd FileType java nnoremap <buffer> <leader>c :JavaCorrect<cr>
+    autocmd FileType java nnoremap <buffer> <leader>f :JavaFormat<cr>
+endif
+
+" Plug
+    nnoremap <silent> <LEADER>pc :<C-U>PlugClean<CR>
+    nnoremap <silent> <LEADER>pd :<C-U>PlugDiff<CR>
+    nnoremap <silent> <LEADER>pi :<C-U>PlugInstall<CR>
+    nnoremap <silent> <LEADER>ps :<C-U>PlugStatus<CR>
+    nnoremap <silent> <LEADER>pu :<C-U>PlugUpdate<CR>
