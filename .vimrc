@@ -65,7 +65,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
                 \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
 
-silent! if call plug#begin('~/.vim/plugged')
+call plug#begin('~/.vim/plugged')
 
     Plug 'tomasr/molokai'
     Plug 'ludovicchabant/vim-gutentags'
@@ -115,8 +115,7 @@ silent! if call plug#begin('~/.vim/plugged')
     Plug 'gaving/vim-textobj-argument'
     " (u)rl
     Plug 'mattn/vim-textobj-url'
-    call plug#end()
-endif
+call plug#end()
 
 let g:java_highlight_all = 1
 let g:java_highlight_debug = 1
@@ -130,20 +129,6 @@ nnoremap <leader>c :e $MYVIMRC<cr>
 
 " Open help files in new tab
 autocmd BufEnter *.txt if &buftype == 'help' | silent wincmd T | endif
-
-if eclim#EclimAvailable()
-    let g:EclimCompletionMethod = 'omnifunc'
-    autocmd FileType java nnoremap <buffer> <leader>t :JUnitFindTest<cr>
-    autocmd FileType java nnoremap <buffer> <leader>i :JavaImport<cr>
-    autocmd FileType java nnoremap <buffer> <leader>o :JavaImportOrganize<cr>
-    autocmd FileType java nnoremap <buffer> <leader>r :JavaRename 
-    autocmd FileType java nnoremap <buffer> <leader>m :JavaMove 
-    autocmd FileType java nnoremap <buffer> <leader>d :JavaDelegate<cr>
-    autocmd FileType java nnoremap <buffer> <leader>y :JavaHierarchy<cr>
-    autocmd FileType java nnoremap <buffer> <leader>s :JavaImpl<cr>
-    autocmd FileType java nnoremap <buffer> <leader>c :JavaCorrect<cr>
-    autocmd FileType java nnoremap <buffer> <leader>f :JavaFormat<cr>
-endif
 
 " Plug
     nnoremap <silent> <LEADER>pc :<C-U>PlugClean<CR>
