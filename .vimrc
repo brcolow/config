@@ -85,7 +85,7 @@ call plug#begin('~/.vim/plugged')
 
     Plug 'ajh17/VimCompletesMe'
 
-    Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+    Plug 'majutsushi/tagbar'
     nmap <leader>t :TagbarToggle<CR>
 
     let g:ctrlp_map = '<c-p>'
