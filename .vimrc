@@ -15,7 +15,6 @@ set smartcase
 set incsearch
 set showmatch
 set hlsearch
-let mapleader=","
 set autoindent
 set backspace=indent,eol,start
 set wildmenu
@@ -48,55 +47,42 @@ set completeopt=longest,menuone
 set clipboard=unnamed
 set mouse=a
 set tabpagemax=50
+set timeoutlen=3000
 
-" When a window is entered, set nowrap (so nowrap is honored even in splits)
-au! WinEnter * set nowrap
-
-nnoremap <silent> <C-L> :nohlsearch<CR>
-
-if has('syntax') && !exists('g:syntax_on')
-  syntax enable
-endif
-
-filetype plugin indent on
-
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+if empty(glob('C:/Users/brcolow/vimfiles/autoload/plug.vim'))
+    silent !curl -fLo C:/Users/brcolow/vimfiles/autoload/plug.vim --create-dirs
                 \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
-
-call plug#begin('~/.vim/plugged')
-
-    Plug 'tomasr/molokai'
+call plug#begin('~/vimfiles/bundle')
+	Plug 'ctrlpvim/ctrlp.vim'
     Plug 'ludovicchabant/vim-gutentags'
-    Plug 'justinmk/vim-gtfo'
     Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-classpath'
-    Plug 'bling/vim-airline'
+	Plug 'tpope/vim-fugitive'
+	Plug 'bling/vim-airline'
+	let g:airline_powerline_fonts = 1
+	let g:airline#extensions#tabline#enabled = 1
 
-    " let g:deoplete#omni_patterns = {}
-    " let g:deoplete#omni_patterns.java = '[^. \t0-9]\.\w*'
-    let g:deoplete#enable_at_startup = 1
-    autocmd FileType java set omnifunc=javacomplete#Complete
-
-    Plug 'Shougo/deoplete.nvim'
     Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
-    let g:JavaComplete_MavenRepositoryDisable = 0
+	let g:JavaComplete_MavenRepositoryDisable = 0
+	Plug 'rudes/vim-java'
 
-    Plug 'ajh17/VimCompletesMe'
+	Plug 'Valloric/YouCompleteMe'
+	let g:ycm_semantic_triggers =  { 'java,jsp' : ['.', '::'] }
+	let g:ycm_collect_identifiers_from_tags_files = 1
 
-    Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
-    nmap <leader>t :TagbarToggle<CR>
-
-    let g:ctrlp_map = '<c-p>'
-    let g:ctrlp_cmd = 'CtrlP'
-    Plug 'ctrlpvim/ctrlp.vim'
+	Plug 'scrooloose/syntastic'
+	let g:syntastic_java_javac_config_file_enabled = 1
+	let g:syntastic_java_javac_delete_output = 0
+	let g:syntastic_always_populate_loc_list = 1
+	let g:syntastic_auto_loc_list = 1
+	let g:syntastic_check_on_open = 1
+	let g:syntastic_check_on_wq = 0
 
     Plug 'benekastah/neomake'
     let g:neomake_java_enabled_makers = ['javac']
-    nnoremap <leader>b :Neomake<cr>
+    nnoremap ,b :Neomake<cr>
 
-    Plug 'inside/vim-search-pulse'
+	Plug 'inside/vim-search-pulse'
     let g:vim_search_pulse_mode = 'pattern'
     let g:vim_search_pulse_disable_auto_mappings = 1
     let g:vim_search_pulse_color_list = ["red", "white"]
@@ -104,8 +90,7 @@ call plug#begin('~/.vim/plugged')
     nmap n n<Plug>Pulse
     nmap N N<Plug>Pulse
 
-    Plug 'mhinz/vim-randomtag'
-
+	Plug 'ryanoasis/vim-devicons'
     Plug 'kana/vim-textobj-user'
     " (l)ine
     Plug 'kana/vim-textobj-line'
@@ -117,22 +102,47 @@ call plug#begin('~/.vim/plugged')
     Plug 'mattn/vim-textobj-url'
 call plug#end()
 
+nnoremap <silent> <C-L> :nohlsearch<CR>
+
+filetype plugin indent on
+syntax enable
+
+" Never insert <CR> if there are completions
+inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
+
+" Java
+augroup java_auto_commands
+	autocmd FileType java,jsp set omnifunc=javacomplete#Complete
+	" fast build (usually followed by running the program)
+	autocmd Filetype java,jsp no <S-F10> :wa<CR> :!mvn install -P fastest -pl core -am<cr>
+	" run unit tests
+	autocmd Filetype java,jsp no <S-F11> :wa<CR> :!mvn test -P skipUITests -pl core -am<cr>
+	" run integration tests
+	autocmd Filetype java,jsp no <S-F12> :wa<CR> :!mvn verify -DskipITTests=false -P skipUITests -pl core -am<cr>
+augroup END
+
 let g:java_highlight_all = 1
 let g:java_highlight_debug = 1
 let g:java_space_errors = 1
 let g:java_highlight_functions = 1
 let g:java_allow_cpp_keywords = 1
+autocmd FileType java nnoremap <F5> :call javacomplete#imports#Add()<CR>
+autocmd FileType java nnoremap <F6> :call javacomplete#imports#RemoveUnused()<CR>
+autocmd FileType java nnoremap <F7> :call javacomplete#imports#AddMissing()<CR>
 
 nnoremap Y y$
-nnoremap <leader>r :source $MYVIMRC<cr>
-nnoremap <leader>c :e $MYVIMRC<cr>
+nnoremap ,so :<C-u>source $MYVIMRC<CR>
+nnoremap ,rc :<C-u>edit $MYVIMRC<CR>
 
 " Open help files in new tab
 autocmd BufEnter *.txt if &buftype == 'help' | silent wincmd T | endif
 
 " Plug
-    nnoremap <silent> <LEADER>pc :<C-U>PlugClean<CR>
-    nnoremap <silent> <LEADER>pd :<C-U>PlugDiff<CR>
-    nnoremap <silent> <LEADER>pi :<C-U>PlugInstall<CR>
-    nnoremap <silent> <LEADER>ps :<C-U>PlugStatus<CR>
-    nnoremap <silent> <LEADER>pu :<C-U>PlugUpdate<CR>
+nnoremap <silent> ,pc :<C-u>PlugClean<CR>
+nnoremap <silent> ,pd :<C-u>PlugDiff<CR>
+nnoremap <silent> ,pi :<C-u>PlugInstall<CR>
+nnoremap <silent> ,ps :<C-u>PlugStatus<CR>
+nnoremap <silent> ,pu :<C-u>PlugUpdate<CR>
+
+" When a window is entered, set nowrap (so nowrap is honored even in splits)
+au! WinEnter * set nowrap

@@ -13,8 +13,6 @@ POWERLEVEL9K_COLOR_SCHEME='light'
 set -o emacs
 set editing-mode emacs
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
 [ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
 source "$HOME/.antigen/antigen.zsh"
 
@@ -36,13 +34,6 @@ zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
-# source /Users/brcolow/.zsh-autosuggestions/autosuggestions.zsh
-
-# Enable autosuggestions automatically
-# zle-line-init() {
-#   zle autosuggest-start
-# }
-
 bindkey '^[[1;2C' forward-word
 
 zle -N zle-line-init
@@ -50,4 +41,5 @@ zle -N zle-line-init
 setopt no_beep
 export PATH="/usr/local/sbin:$PATH"
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+ # Add RVM to PATH for scripting
+export PATH="$PATH:$HOME/.rvm/bin"

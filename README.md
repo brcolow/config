@@ -1,2 +1,1 @@
-# config
-dotfiles
+My dotfiles for Windows 7 and Mac OS X.
