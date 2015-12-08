@@ -66,9 +66,11 @@ call plug#begin('~/vimfiles/bundle')
 	let g:JavaComplete_MavenRepositoryDisable = 0
 	Plug 'rudes/vim-java'
 
+<<<<<<< HEAD
 	Plug 'Valloric/YouCompleteMe'
 	let g:ycm_semantic_triggers =  { 'java,jsp' : ['.', '::'] }
 	let g:ycm_collect_identifiers_from_tags_files = 1
+=======
 
 	Plug 'scrooloose/syntastic'
 	let g:syntastic_java_javac_config_file_enabled = 1
@@ -138,6 +140,7 @@ nnoremap ,rc :<C-u>edit $MYVIMRC<CR>
 autocmd BufEnter *.txt if &buftype == 'help' | silent wincmd T | endif
 
 " Plug
+<<<<<<< HEAD
 nnoremap <silent> ,pc :<C-u>PlugClean<CR>
 nnoremap <silent> ,pd :<C-u>PlugDiff<CR>
 nnoremap <silent> ,pi :<C-u>PlugInstall<CR>
