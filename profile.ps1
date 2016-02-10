@@ -19,8 +19,18 @@ function dep {
    mvn versions:display-dependency-updates
 }
 
+function plug {
+	mvn versions:display-plugin-updates
+}
+
+# For this to work, install cyg-apt to cygwin's bin directory:
+# lynx -source rawgit.com/svnpenn/sage/master/sage > sage
+# cp apt-cyg bin/apt-cyg
+# chmod +x apt-cyg
+# (or install sage /bin)
+# Then one can use it from powershell thusly: "apt install tmux"
 function apt {
-    bash apt-cyg $args
+    bash sage $args
 }
 
 function cent {
@@ -41,15 +51,13 @@ function centdeploy {
 	bash C:\code\centurion\scripts\deploy.sh
 }
 
-function Write-Color-LS
-    {
+function Write-Color-LS {
         param ([string]$color = "white", $file)
         Write-host ("{0,-7} {1,25} {2,10} {3}" -f $file.mode, ([String]::Format("{0,10}  {1,8}", $file.LastWriteTime.ToString("d"), $file.LastWriteTime.ToString("t"))), $file.length, $file.name) -foregroundcolor $color 
     }
 
 New-CommandWrapper Out-Default -Process {
     $regex_opts = ([System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
-
 
     $compressed = New-Object System.Text.RegularExpressions.Regex(
         '\.(zip|tar|gz|rar|jar|war)$', $regex_opts)
@@ -99,16 +107,14 @@ New-CommandWrapper Out-Default -Process {
 Remove-Item alias:ls
 Set-Alias ls LS-Padded
 
-function LS-Padded
-{
+function LS-Padded {
     param ($dir)
     Get-Childitem $dir
     Write-Host
     getDirSize $dir
 }
 
-function getDirSize
-{
+function getDirSize {
     param ($dir)
     $bytes = 0
 
