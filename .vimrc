@@ -1,9 +1,6 @@
-if has("nvim")
-    let g:python_host_prog='/usr/bin/python2'
-endif
+set nocompatible
 
 set shortmess+=c
-set nocompatible
 set encoding=utf-8
 set ttyfast
 set tabstop=4
@@ -18,13 +15,10 @@ set hlsearch
 set autoindent
 set backspace=indent,eol,start
 set wildmenu
-" set wildmode=list:longest,full
 set smarttab
 set complete-=i
 set laststatus=2
 set number
-set noswapfile
-set nobackup
 set noerrorbells
 set visualbell t_vb=
 set tm=500
@@ -34,12 +28,11 @@ set autoread
 set fileformats+=mac
 set history=10000
 set nostartofline
-set tags^=./.tags,.tags
 set wildmode=list:longest
-set wildignore+=*/tmp/*,*/target/*,*.so,*.swp,*.zip,*.class,*.jar
-set listchars=trail:·,tab:▸\
+set wildignore+=*/tmp/*,*/target/*,*.so,*.swp,*.zip,*.class,*.jar,*.exe
+set list
+set listchars=tab:»-,trail:·,extends:>,precedes:<,nbsp:¤
 set smartindent
-set expandtab
 set shiftround
 set splitright
 set nowrap
@@ -49,42 +42,89 @@ set mouse=a
 set tabpagemax=50
 set timeoutlen=3000
 
-if empty(glob('C:/Users/brcolow/vimfiles/autoload/plug.vim'))
-    silent !curl -fLo C:/Users/brcolow/vimfiles/autoload/plug.vim --create-dirs
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+let s:vim_dir = ''
+if has('win32')
+    let s:vim_dir = $HOME . '/vimfiles'
+else
+    let s:vim_dir = $HOME . '/.vim'
 endif
-call plug#begin('~/vimfiles/bundle')
-	Plug 'ctrlpvim/ctrlp.vim'
+
+" backup{{{
+set backup
+if (&backup)
+    let s:vim_backup_dir = s:vim_dir . '/backup'
+    set backupext=.bak
+    let &backupdir=s:vim_backup_dir
+    
+    if !isdirectory(s:vim_backup_dir) && exists('*mkdir') " create backup directory INE
+        call mkdir(s:vim_backup_dir, 'p', 0700)
+    endif
+endif
+"}}}
+
+" swap{{{
+set swapfile
+if (&swapfile)
+    let s:vim_swap_dir = s:vim_dir . '/swap//'
+    let &directory=s:vim_swap_dir
+    
+    if !isdirectory(s:vim_swap_dir) && exists('*mkdir') " create swap directory INE
+        call mkdir(s:vim_swap_dir, 'p', 0700)
+    endif
+endif
+"}}}
+
+" undo{{{
+if has("persistent_undo")
+    set undofile
+    let s:vim_undo_dir = s:vim_dir . '/undo//'
+    let &undodir=s:vim_undo_dir
+    
+    if !isdirectory(s:vim_undo_dir) && exists('*mkdir') " create undo directory INE
+        call mkdir(s:vim_undo_dir, 'p', 0700)
+    endif
+endif
+"}}}
+
+if empty(s:vim_dir . '/autoload/plug.vim')
+execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
+    \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+endif
+
+call plug#begin(s:vim_dir . '/bundle')
+    " Make ctrl-p ignore files in .gitignore
+    let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+    Plug 'ctrlpvim/ctrlp.vim'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'tpope/vim-surround'
-	Plug 'tpope/vim-fugitive'
-	Plug 'bling/vim-airline'
-	let g:airline_powerline_fonts = 1
-	let g:airline#extensions#tabline#enabled = 1
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-dispatch'
+    Plug 'tpope/vim-commentary'
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'vim-airline/vim-airline'
+    let g:airline#extensions#tabline#enabled = 1
+
+    Plug 'majutsushi/tagbar'
+    noremap <silent> <F2> :TagbarToggle<CR>
 
     Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
-	let g:JavaComplete_MavenRepositoryDisable = 0
-	Plug 'rudes/vim-java'
 
-<<<<<<< HEAD
-	Plug 'Valloric/YouCompleteMe'
-	let g:ycm_semantic_triggers =  { 'java,jsp' : ['.', '::'] }
-	let g:ycm_collect_identifiers_from_tags_files = 1
-=======
+    " Better java.vim syntax highlighting
+    Plug 'rudes/vim-java', { 'for' : 'java' }
+    
+    Plug 'Valloric/YouCompleteMe', { 'do': 'python install.py --clang-completer --tern-completer' }
+    " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
+    " let g:ycm_collect_identifiers_from_tags_files = 1
 
-	Plug 'scrooloose/syntastic'
-	let g:syntastic_java_javac_config_file_enabled = 1
-	let g:syntastic_java_javac_delete_output = 0
-	let g:syntastic_always_populate_loc_list = 1
-	let g:syntastic_auto_loc_list = 1
-	let g:syntastic_check_on_open = 1
-	let g:syntastic_check_on_wq = 0
+    " Plug 'scrooloose/syntastic'
+    " let g:syntastic_java_javac_config_file_enabled = 1
+    " let g:syntastic_java_javac_delete_output = 0
+    " let g:syntastic_always_populate_loc_list = 1
+    " let g:syntastic_auto_loc_list = 1
+    " let g:syntastic_check_on_open = 1
+    " let g:syntastic_check_on_wq = 0
 
-    Plug 'benekastah/neomake'
-    let g:neomake_java_enabled_makers = ['javac']
-    nnoremap ,b :Neomake<cr>
-
-	Plug 'inside/vim-search-pulse'
+    Plug 'inside/vim-search-pulse'
     let g:vim_search_pulse_mode = 'pattern'
     let g:vim_search_pulse_disable_auto_mappings = 1
     let g:vim_search_pulse_color_list = ["red", "white"]
@@ -92,7 +132,6 @@ call plug#begin('~/vimfiles/bundle')
     nmap n n<Plug>Pulse
     nmap N N<Plug>Pulse
 
-	Plug 'ryanoasis/vim-devicons'
     Plug 'kana/vim-textobj-user'
     " (l)ine
     Plug 'kana/vim-textobj-line'
@@ -102,35 +141,61 @@ call plug#begin('~/vimfiles/bundle')
     Plug 'gaving/vim-textobj-argument'
     " (u)rl
     Plug 'mattn/vim-textobj-url'
+    
+    " Development
+    Plug 'brcolow/neomake'
+    let g:neomake_verbose=3
+    let g:neomake_logfile="neomake.log"
+    
 call plug#end()
 
-nnoremap <silent> <C-L> :nohlsearch<CR>
+nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 filetype plugin indent on
 syntax enable
 
+if executable('pt')
+    let &grepprg = 'pt --nogroup --nocolor'
+    let g:ctrlp_user_command = ['pt --nocolor -g "\\*" %s']
+elseif executable('ag')
+    let &grepprg = 'ag --vimgrep $*'
+    let &grepformat=%f:%l:%c:%m
+    let g:ctrlp_user_command = ['ag %s -l --nocolor -g ""']
+endif
+
+if has("gui_running")
+    " width of gvim
+    setglobal columns=230
+    " height of gvim
+    setglobal lines=55
+    " Hide toolbar and menus.
+    setglobal guioptions-=Tt
+    setglobal guioptions-=m
+    " Scrollbar is always off.
+    setglobal guioptions-=rL
+    " Not guitablabel.
+    setglobal guioptions-=e
+    " Confirm without window.
+    setglobal guioptions+=c
+    let g:gruvbox_italic = 0
+    colorscheme gruvbox
+    set bg=dark
+
+    let g:airline_powerline_fonts = 0
+
+    if has("gui_gtk2")
+        set guifont=Inconsolata\ 12
+    elseif has("gui_macvim")
+        set guifont=Menlo\ Regular:h14
+    elseif has("gui_win32")
+        set guifont=Bitstream_Vera_Sans_Mono:h11:cANSI
+  endif
+else
+    let g:airline_powerline_fonts = 1
+endif
+
 " Never insert <CR> if there are completions
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
-
-" Java
-augroup java_auto_commands
-	autocmd FileType java,jsp set omnifunc=javacomplete#Complete
-	" fast build (usually followed by running the program)
-	autocmd Filetype java,jsp no <S-F10> :wa<CR> :!mvn install -P fastest -pl core -am<cr>
-	" run unit tests
-	autocmd Filetype java,jsp no <S-F11> :wa<CR> :!mvn test -P skipUITests -pl core -am<cr>
-	" run integration tests
-	autocmd Filetype java,jsp no <S-F12> :wa<CR> :!mvn verify -DskipITTests=false -P skipUITests -pl core -am<cr>
-augroup END
-
-let g:java_highlight_all = 1
-let g:java_highlight_debug = 1
-let g:java_space_errors = 1
-let g:java_highlight_functions = 1
-let g:java_allow_cpp_keywords = 1
-autocmd FileType java nnoremap <F5> :call javacomplete#imports#Add()<CR>
-autocmd FileType java nnoremap <F6> :call javacomplete#imports#RemoveUnused()<CR>
-autocmd FileType java nnoremap <F7> :call javacomplete#imports#AddMissing()<CR>
 
 nnoremap Y y$
 nnoremap ,so :<C-u>source $MYVIMRC<CR>
@@ -139,8 +204,24 @@ nnoremap ,rc :<C-u>edit $MYVIMRC<CR>
 " Open help files in new tab
 autocmd BufEnter *.txt if &buftype == 'help' | silent wincmd T | endif
 
+" (Faster) window movements (press tab to cycle through windows, alt + direction to move windows)
+nmap <silent> <A-Up> :wincmd k<CR>
+nmap <silent> <A-Down> :wincmd j<CR>
+nmap <silent> <A-Left> :wincmd h<CR>
+nmap <silent> <A-Right> :wincmd l<CR>
+nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
+xmap     <silent>       <tab> <esc><tab>
+
+" go to the previous window (or any other window if there is no 'previous' window).
+func! s:switch_to_alt_win()
+  let currwin = winnr()
+  wincmd p
+  if winnr() == currwin "window didn't change, so there was no 'previous' window.
+    wincmd W
+  endif 
+endf
+
 " Plug
-<<<<<<< HEAD
 nnoremap <silent> ,pc :<C-u>PlugClean<CR>
 nnoremap <silent> ,pd :<C-u>PlugDiff<CR>
 nnoremap <silent> ,pi :<C-u>PlugInstall<CR>
@@ -149,3 +230,24 @@ nnoremap <silent> ,pu :<C-u>PlugUpdate<CR>
 
 " When a window is entered, set nowrap (so nowrap is honored even in splits)
 au! WinEnter * set nowrap
+
+autocmd FileType gitcommit highlight ColorColumn ctermbg=241 guibg=#2b1d0e
+autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
+
+" Java{{{
+autocmd FileType java setlocal omnifunc=javacomplete#Complete
+autocmd FileType java highlight ColorColumn ctermbg=241 guibg=#2b1d0e
+autocmd FileType java let &colorcolumn=join(range(120,999),",")
+autocmd FileType java setlocal tabstop=4 shiftwidth=4 expandtab copyindent softtabstop=0
+autocmd FileType java setlocal makeprg=mvn
+autocmd FileType java setlocal errorformat=[%tRROR]\ %f:%l:\ %m,%-G%.%#
+
+let g:neomake_java_enabled_makers = ['mvn']
+if exists("g:loaded_dispatch")
+    autocmd Filetype java nnoremap <S-F10> :Make install -P fastest -pl core -am -T 0.5C<cr>
+else
+    autocmd Filetype java nnoremap <S-F10> :make install -P fastest -pl core -am -T 0.5C<cr>
+endif
+"}}}
+
+au BufRead,BufNewFile *.fxml set filetype=xml
