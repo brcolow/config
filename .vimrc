@@ -1,5 +1,6 @@
-set nocompatible
 
+" vim: foldmethod=marker
+set nocompatible
 set shortmess+=c
 set encoding=utf-8
 set ttyfast
@@ -31,7 +32,7 @@ set nostartofline
 set wildmode=list:longest
 set wildignore+=*/tmp/*,*/target/*,*.so,*.swp,*.zip,*.class,*.jar,*.exe
 set list
-set listchars=tab:Â»-,trail:Â·,extends:>,precedes:<,nbsp:Â¤
+set listchars=tab:»-,trail:·,extends:>,precedes:<,nbsp:¤
 set smartindent
 set shiftround
 set splitright
@@ -43,7 +44,7 @@ set tabpagemax=50
 set timeoutlen=3000
 
 let s:vim_dir = ''
-if has('win32')
+if has('win32') || has('win64')
     let s:vim_dir = $HOME . '/vimfiles'
 else
     let s:vim_dir = $HOME . '/.vim'
@@ -55,7 +56,7 @@ if (&backup)
     let s:vim_backup_dir = s:vim_dir . '/backup'
     set backupext=.bak
     let &backupdir=s:vim_backup_dir
-    
+
     if !isdirectory(s:vim_backup_dir) && exists('*mkdir') " create backup directory INE
         call mkdir(s:vim_backup_dir, 'p', 0700)
     endif
@@ -67,7 +68,7 @@ set swapfile
 if (&swapfile)
     let s:vim_swap_dir = s:vim_dir . '/swap//'
     let &directory=s:vim_swap_dir
-    
+
     if !isdirectory(s:vim_swap_dir) && exists('*mkdir') " create swap directory INE
         call mkdir(s:vim_swap_dir, 'p', 0700)
     endif
@@ -79,7 +80,7 @@ if has("persistent_undo")
     set undofile
     let s:vim_undo_dir = s:vim_dir . '/undo//'
     let &undodir=s:vim_undo_dir
-    
+
     if !isdirectory(s:vim_undo_dir) && exists('*mkdir') " create undo directory INE
         call mkdir(s:vim_undo_dir, 'p', 0700)
     endif
@@ -92,6 +93,7 @@ execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . '
 endif
 
 call plug#begin(s:vim_dir . '/bundle')
+    Plug 'morhetz/gruvbox'
     " Make ctrl-p ignore files in .gitignore
     let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
     Plug 'ctrlpvim/ctrlp.vim'
@@ -99,6 +101,7 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-dispatch'
+    Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-commentary'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'vim-airline/vim-airline'
@@ -107,11 +110,14 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'majutsushi/tagbar'
     noremap <silent> <F2> :TagbarToggle<CR>
 
+    if exists('g:vimplugin_running')
+        " eclim is running
+    endif
     Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
     " Better java.vim syntax highlighting
     Plug 'rudes/vim-java', { 'for' : 'java' }
-    
+
     Plug 'Valloric/YouCompleteMe', { 'do': 'python install.py --clang-completer --tern-completer' }
     " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
     " let g:ycm_collect_identifiers_from_tags_files = 1
@@ -141,12 +147,6 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'gaving/vim-textobj-argument'
     " (u)rl
     Plug 'mattn/vim-textobj-url'
-    
-    " Development
-    Plug 'brcolow/neomake'
-    let g:neomake_verbose=3
-    let g:neomake_logfile="neomake.log"
-    
 call plug#end()
 
 nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
@@ -210,7 +210,7 @@ nmap <silent> <A-Down> :wincmd j<CR>
 nmap <silent> <A-Left> :wincmd h<CR>
 nmap <silent> <A-Right> :wincmd l<CR>
 nnoremap <silent><expr> <tab> (v:count > 0 ? '<c-w>w' : ':<C-u>call <sid>switch_to_alt_win()<cr>')
-xmap     <silent>       <tab> <esc><tab>
+xmap <silent> <tab> <esc><tab>
 
 " go to the previous window (or any other window if there is no 'previous' window).
 func! s:switch_to_alt_win()
@@ -218,15 +218,16 @@ func! s:switch_to_alt_win()
   wincmd p
   if winnr() == currwin "window didn't change, so there was no 'previous' window.
     wincmd W
-  endif 
+  endif
 endf
 
-" Plug
+" vim-plug mappings{{{
 nnoremap <silent> ,pc :<C-u>PlugClean<CR>
 nnoremap <silent> ,pd :<C-u>PlugDiff<CR>
 nnoremap <silent> ,pi :<C-u>PlugInstall<CR>
 nnoremap <silent> ,ps :<C-u>PlugStatus<CR>
 nnoremap <silent> ,pu :<C-u>PlugUpdate<CR>
+" }}}
 
 " When a window is entered, set nowrap (so nowrap is honored even in splits)
 au! WinEnter * set nowrap
@@ -235,19 +236,25 @@ autocmd FileType gitcommit highlight ColorColumn ctermbg=241 guibg=#2b1d0e
 autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
 
 " Java{{{
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
+" if exists('g:vimplugin_running')
+    " autocmd FileType java let g:EclimCompletionMethod = 'omnifunc'
+" else
+    autocmd FileType java setlocal omnifunc=javacomplete#Complete
+" endif
 autocmd FileType java highlight ColorColumn ctermbg=241 guibg=#2b1d0e
 autocmd FileType java let &colorcolumn=join(range(120,999),",")
 autocmd FileType java setlocal tabstop=4 shiftwidth=4 expandtab copyindent softtabstop=0
 autocmd FileType java setlocal makeprg=mvn
-autocmd FileType java setlocal errorformat=[%tRROR]\ %f:%l:\ %m,%-G%.%#
+autocmd FileType java setlocal errorformat=[%tRROR]\ %f:[%l]\ %m,%-G%.%#
 
-let g:neomake_java_enabled_makers = ['mvn']
+let g:neomake_java_enabled_makers = ['javac']
+let g:neomake_mvn_args = ['package', '-pl', 'core', '-P', 'fastest', '-T', '2']
+
 if exists("g:loaded_dispatch")
     autocmd Filetype java nnoremap <S-F10> :Make install -P fastest -pl core -am -T 0.5C<cr>
 else
     autocmd Filetype java nnoremap <S-F10> :make install -P fastest -pl core -am -T 0.5C<cr>
 endif
-"}}}
 
 au BufRead,BufNewFile *.fxml set filetype=xml
+"}}}
