@@ -42,6 +42,7 @@ set clipboard=unnamed
 set mouse=a
 set tabpagemax=50
 set timeoutlen=3000
+set t_Co=256
 
 let s:vim_dir = ''
 if has('win32') || has('win64')
@@ -87,9 +88,10 @@ if has("persistent_undo")
 endif
 "}}}
 
-if empty(s:vim_dir . '/autoload/plug.vim')
+if empty(glob(s:vim_dir . '/autoload/plug.vim'))
 execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
     \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
 call plug#begin(s:vim_dir . '/bundle')
@@ -117,8 +119,9 @@ call plug#begin(s:vim_dir . '/bundle')
 
     " Better java.vim syntax highlighting
     Plug 'rudes/vim-java', { 'for' : 'java' }
-
-    Plug 'Valloric/YouCompleteMe', { 'do': 'python install.py --clang-completer --tern-completer' }
+    Plug 'ajh17/VimCompletesMe'
+    " let g:ycm_path_to_python_interpreter="C:\\Python27\\python.exe"
+    " Plug 'Valloric/YouCompleteMe', { 'do': 'python install.py --clang-completer --tern-completer' }
     " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
     " let g:ycm_collect_identifiers_from_tags_files = 1
 
@@ -160,7 +163,7 @@ if executable('pt')
 elseif executable('ag')
     let &grepprg = 'ag --vimgrep $*'
     let &grepformat=%f:%l:%c:%m
-    let g:ctrlp_user_command = ['ag %s -l --nocolor -g ""']
+    let g:ctrlp_user_command = ['ag %s -f -l --nocolor -g "" --hidden --ignore .git']
 endif
 
 if has("gui_running")
@@ -241,6 +244,7 @@ autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
 " else
     autocmd FileType java setlocal omnifunc=javacomplete#Complete
 " endif
+autocmd FileType java let b:vcm_tab_complete = 'omni'
 autocmd FileType java highlight ColorColumn ctermbg=241 guibg=#2b1d0e
 autocmd FileType java let &colorcolumn=join(range(120,999),",")
 autocmd FileType java setlocal tabstop=4 shiftwidth=4 expandtab copyindent softtabstop=0
