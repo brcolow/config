@@ -1,11 +1,11 @@
 [user]
   name = Michael Ennen
   email = (none)
+  useconfigonly = true
 [core]
   autocrlf = false
   excludesfile = C:\\Users\\brcolow\\Documents\\gitignore_global.txt
   editor = 'C:/Program Files (x86)/Notepad++/notepad++.exe' -multiInst -notabbar -nosession -noPlugin
-  # requires https://github.com/stevemao/diff-so-fancy
   pager = diff-so-fancy | less --tabs=1,5 -R
 [difftool]
   cmd = 'C:/Program Files (x86)/WinMerge/WinMergeU.exe' \"$LOCAL\" \"$REMOTE\"
@@ -16,11 +16,10 @@
 [alias]
   export = archive -o latest.tar.gz -9 --prefix=latest/
   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-  d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 [credential]
   helper = wincred
 [color]
-    ui = always
+  ui = always
 [color "diff"]
   meta = yellow bold
   commit = green bold
@@ -34,6 +33,8 @@
   newNormal = "green bold"
   newHighlight = "green bold 22"
 [color "branch"]
-  current   = bold white green
-  local     = bold yellow
-  remote    = bold magenta
+  current = bold white green
+  local = bold yellow
+  remote = bold magenta
+[rerere]
+  enabled = true
