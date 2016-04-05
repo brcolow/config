@@ -38,7 +38,5 @@
     enabled = true
 [credential]
 	helper = manager
-[commit]
-	gpgsign = true
 [gpg]
 	program = C:/Program Files (x86)/GNU/GnuPG/gpg2.exe
