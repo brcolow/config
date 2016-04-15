@@ -1,3 +1,4 @@
+export TERM="xterm-256color"
 export SHELL=/bin/zsh
 export EDITOR=vim
 export LANG=en_US.UTF-8
