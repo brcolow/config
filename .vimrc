@@ -88,12 +88,13 @@ if has("persistent_undo")
 endif
 "}}}
 
-if empty(glob(s:vim_dir . '/autoload/plug.vim'))
+if empty(glob(s:vim_dir . '/autoload/plug.vim')) && executable('curl')
 execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
     \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
+try
 call plug#begin(s:vim_dir . '/bundle')
     Plug 'morhetz/gruvbox'
     " Make ctrl-p ignore files in .gitignore
@@ -157,7 +158,9 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'mattn/vim-textobj-url'
     Plug 'vim-scripts/swap-parameters'
 call plug#end()
-
+catch /E117:/
+    echohl ErrorMsg | echom 'Could not auto-install vim-plug...check curl' | echohl None
+endtry
 nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 filetype plugin indent on
