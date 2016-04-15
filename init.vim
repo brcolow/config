@@ -1,7 +1,8 @@
 " vim: foldmethod=marker
-set nocompatible
+if !has('nvim') && has('vim_starting')
+     set encoding=utf-8
+endif
 set shortmess+=c
-set encoding=utf-8
 set ttyfast
 set tabstop=4
 set shiftwidth=4
@@ -19,8 +20,7 @@ set smarttab
 set complete-=i
 set laststatus=2
 set number
-set noerrorbells
-set visualbell t_vb=
+set noerrorbells visualbell t_vb=
 set tm=500
 set showcmd
 set noshowmode
@@ -40,7 +40,7 @@ set completeopt=longest,menuone
 set mouse=a
 set tabpagemax=50
 set timeoutlen=3000
-set t_Co=256
+" set t_Co=256
 
 let s:vim_dir = ''
 let s:is_win = 0
@@ -114,9 +114,10 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-commentary'
     let g:airline_powerline_fonts = 1
-    " Plug 'vim-airline/vim-airline-themes'
-    " Plug 'vim-airline/vim-airline'
-    " let g:airline#extensions#tabline#enabled = 1
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'vim-airline/vim-airline'
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline_theme='solarized dark'
 
     Plug 'majutsushi/tagbar'
     noremap <silent> <F2> :TagbarToggle<CR>
