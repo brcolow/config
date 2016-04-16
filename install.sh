@@ -16,6 +16,9 @@ ln -s ${BASEDIR}/zsh/.zsh_aliases ~/.zsh_aliases
 # Neovim
 ln -s ${BASEDIR}/init.vim ~/.config/nvim/init.vim
 
+# Git
 ln -s ${BASEDIR}/.gitconfig ~/.gitconfig
+ln -s ${BASEDIR}/.gitexcludes ~/.gitexcludes
+
 ln -s ${BASEDIR}/.bashrc ~/.bashrc
 

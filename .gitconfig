@@ -4,6 +4,7 @@
     useconfigonly = true
 [core]
     autocrlf = false
+    excludesfile = ~/.gitexcludes
 [push]
     default = simple
 [i18n]
