@@ -32,3 +32,5 @@
     remote = bold magenta
 [rerere]
     enabled = true
+[github]
+    user = brcolow
