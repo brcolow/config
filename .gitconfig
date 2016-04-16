@@ -4,11 +4,6 @@
     useconfigonly = true
 [core]
     autocrlf = false
-    excludesfile = C:\\Users\\brcolow\\Documents\\gitignore_global.txt
-    editor = 'C:/Program Files (x86)/Notepad++/notepad++.exe' -multiInst -notabbar -nosession -noPlugin
-    pager = diff-so-fancy | less --tabs=1,5 -R
-[difftool]
-    cmd = 'C:/Program Files (x86)/WinMerge/WinMergeU.exe' \"$LOCAL\" \"$REMOTE\"
 [push]
     default = simple
 [i18n]
@@ -36,7 +31,3 @@
     remote = bold magenta
 [rerere]
     enabled = true
-[credential]
-	helper = manager
-[gpg]
-	program = C:/Program Files (x86)/GNU/GnuPG/gpg2.exe

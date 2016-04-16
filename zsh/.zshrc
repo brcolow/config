@@ -1,3 +1,4 @@
+export TERM="xterm-256color"
 export SHELL=/bin/zsh
 export EDITOR=vim
 export LANG=en_US.UTF-8
@@ -25,7 +26,7 @@ antigen bundle gitfast
 
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search
-antigen theme dritter/powerlevel9k powerlevel9k --branch=dritter/prezto
+antigen theme bhilburn/powerlevel9k powerlevel9k
 
 antigen-apply
 
