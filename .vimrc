@@ -30,8 +30,10 @@ set history=10000
 set nostartofline
 set wildmode=list:longest
 set wildignore+=*/tmp/*,*/target/*,*.so,*.swp,*.zip,*.class,*.jar,*.exe
+set wildignore+=*DS_Store*,.idea/**,.git,.gitkeep,*.png,*.jpg,*.gif
+
 set list
-set listchars=tab:�-,trail:�,extends:>,precedes:<,nbsp:�
+set listchars=tab:▸\ ,trail:·,extends:»,precedes:«,nbsp:⎵
 set smartindent
 set shiftround
 set splitright
@@ -97,7 +99,8 @@ endif
 call plug#begin(s:vim_dir . '/bundle')
     Plug 'morhetz/gruvbox'
     " Make ctrl-p ignore files in .gitignore
-    let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+    let g:ctrlp_working_path_mode = 'raw'
+    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'tpope/vim-surround'
@@ -106,9 +109,10 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-commentary'
     let g:airline_powerline_fonts = 1
-    " Plug 'vim-airline/vim-airline-themes'
-    " Plug 'vim-airline/vim-airline'
-    " let g:airline#extensions#tabline#enabled = 1
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'vim-airline/vim-airline'
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline_theme = 'papercolor'
 
     Plug 'majutsushi/tagbar'
     noremap <silent> <F2> :TagbarToggle<CR>
@@ -124,17 +128,20 @@ call plug#begin(s:vim_dir . '/bundle')
         Plug 'Shougo/deoplete.nvim'
         Plug 'benekastah/neomake'
     else
-        let g:ycm_path_to_python_interpreter="C:\\Program Files\\Python\\Python35\\python.exe"
+        " let g:ycm_path_to_python_interpreter="C:\\Program Files\\Python\\Python35\\python.exe"
         Plug 'Valloric/YouCompleteMe', { 'do': 'python install.py --clang-completer --tern-completer' }
         " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
         " let g:ycm_collect_identifiers_from_tags_files = 1
 
         Plug 'scrooloose/syntastic'
-        let g:syntastic_java_javac_config_file_enabled = 1
-        let g:syntastic_java_javac_delete_output = 0
+        " let g:syntastic_debug = 1
+        " let g:syntastic_java_javac_config_file_enabled = 1
+        " let g:syntastic_java_javac_delete_output = 0
         let g:syntastic_always_populate_loc_list = 1
+        let g:syntastic_error_symbol = '✗'
+        let g:syntastic_warning_symbol = '⚠'
         let g:syntastic_auto_loc_list = 1
-        let g:syntastic_check_on_open = 1
+        " let g:syntastic_check_on_open = 1
         let g:syntastic_check_on_wq = 0
     endif
 
@@ -230,7 +237,7 @@ else
 endif
 
 " statusline{{{
-hi User1 ctermfg=4 guifg=#40ffff " Identifier
+hi User1 ctermfg=4 guifg=#40ffff  " Identifier
 hi User5 ctermfg=10 guifg=#80a0ff " Comment
 
 function! Slash()
@@ -245,6 +252,12 @@ set statusline=
 set statusline+=%5*%{expand('%:h')}     " Relative path to file dir
 set statusline+=%{Slash()}%*
 set statusline+=%1*%t%*                 " file name
+set statusline+=%2*\ %{strlen(&ft)?&ft:'none'}
+set statusline+=\ [%{&fileformat}]
+set statusline+=\ %{&encoding}
+set statusline+=\ %{fugitive#statusline()}
+set statusline+=\ ==\ %l/%L             " cursor line/total lines
+set statusline+=\ (%c)\                 " cursor column
 "}}}
 
 " vim-plug mappings{{{
@@ -272,6 +285,11 @@ autocmd FileType java setlocal tabstop=4 shiftwidth=4 expandtab copyindent softt
 autocmd FileType java setlocal makeprg=mvn
 autocmd FileType java setlocal errorformat=[%tRROR]\ %f:[%l]\ %m,%-G%.%#
 nmap <F4> <Plug>(JavaComplete-Imports-AddSmart)
+let g:java_highlight_all = 1
+let g:java_highlight_debug = 1
+"let g:java_space_errors = 1
+let g:java_highlight_functions = 1
+let g:java_allow_cpp_keywords = 1
 
 let g:neomake_java_enabled_makers = ['javac']
 let g:neomake_mvn_args = ['package', '-pl', 'core', '-P', 'fastest', '-T', '2']
