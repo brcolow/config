@@ -4,6 +4,7 @@
     useconfigonly = true
 [core]
     autocrlf = false
+    excludesfile = ~/.gitexcludes
 [push]
     default = simple
 [i18n]
@@ -31,3 +32,5 @@
     remote = bold magenta
 [rerere]
     enabled = true
+[github]
+    user = brcolow

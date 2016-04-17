@@ -5,11 +5,14 @@ export LANG=en_US.UTF-8
 export GROOVY_HOME=/usr/local/opt/groovy/libexec
 export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 export VIM=""
+export GOPATH="$HOME/.go"
+export PATH=$PATH:$GOPATH/bin
 
-POWERLEVEL9K_MODE='awesome-patched'
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
+POWERLEVEL9K_MODE='awesome-fontconfig'
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
 POWERLEVEl9K_RIGHT_PROMPT_ELEMENTS=(status time)
 POWERLEVEL9K_COLOR_SCHEME='light'
+POWERLEVEL9K_STATUS_VERBOSE=false
 
 set -o emacs
 set editing-mode emacs
