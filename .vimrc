@@ -90,13 +90,17 @@ if has("persistent_undo")
 endif
 "}}}
 
-if empty(glob(s:vim_dir . '/autoload/plug.vim')) && executable('curl')
+if empty(glob(s:vim_dir . '/autoload/plug.vim'))
 execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
     \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
-try
+function! Cond(cond, ...)
+    let opts = get(a:000, 0, {})
+    return a:cond ? opts : extend(opts, { 'on': [] })
+endfunction
+
 call plug#begin(s:vim_dir . '/bundle')
     Plug 'morhetz/gruvbox'
     " Make ctrl-p ignore files in .gitignore
@@ -125,26 +129,23 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'rudes/vim-java', { 'for' : 'java' }
     Plug 'NLKNguyen/vim-maven-syntax', { 'for' : 'xml.maven' }
 
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim'
-        Plug 'benekastah/neomake'
-    else
-        " let g:ycm_path_to_python_interpreter="C:\\Program Files\\Python\\Python35\\python.exe"
-        Plug 'Valloric/YouCompleteMe', { 'do': 'python install.py --clang-completer --tern-completer' }
-        " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
-        " let g:ycm_collect_identifiers_from_tags_files = 1
+    Plug 'Shougo/deoplete.nvim', Cond(has('nvim'))
+    Plug 'benekastah/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
+    " let g:ycm_path_to_python_interpreter="C:\\Program Files\\Python\\Python35\\python.exe"
+    Plug 'Valloric/YouCompleteMe', Cond(!has('nvim')), { 'do': 'python install.py --clang-completer --tern-completer' }
+    " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
+    " let g:ycm_collect_identifiers_from_tags_files = 1
 
-        Plug 'scrooloose/syntastic'
-        " let g:syntastic_debug = 1
-        " let g:syntastic_java_javac_config_file_enabled = 1
-        " let g:syntastic_java_javac_delete_output = 0
-        let g:syntastic_always_populate_loc_list = 1
-        let g:syntastic_error_symbol = '✗'
-        let g:syntastic_warning_symbol = '⚠'
-        let g:syntastic_auto_loc_list = 1
-        " let g:syntastic_check_on_open = 1
-        let g:syntastic_check_on_wq = 0
-    endif
+    Plug 'scrooloose/syntastic', Cond(!has('nvim'))
+    " let g:syntastic_debug = 1
+    " let g:syntastic_java_javac_config_file_enabled = 1
+    " let g:syntastic_java_javac_delete_output = 0
+    let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_error_symbol = '✗'
+    let g:syntastic_warning_symbol = '⚠'
+    let g:syntastic_auto_loc_list = 1
+    " let g:syntastic_check_on_open = 1
+    let g:syntastic_check_on_wq = 0
 
     Plug 'inside/vim-search-pulse'
     let g:vim_search_pulse_mode = 'pattern'
@@ -163,11 +164,9 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'gaving/vim-textobj-argument'
     " (u)rl
     Plug 'mattn/vim-textobj-url'
-    Plug 'vim-scripts/swap-parameters'
+    " Plug 'vim-scripts/swap-parameters'
 call plug#end()
-catch /E117:/
-    echohl ErrorMsg | echom 'Could not auto-install vim-plug...check curl' | echohl None
-endtry
+
 nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 filetype plugin indent on
@@ -240,6 +239,7 @@ else
 endif
 
 " statusline{{{
+if 0 
 hi User1 ctermfg=4 guifg=#40ffff  " Identifier
 hi User5 ctermfg=10 guifg=#80a0ff " Comment
 
@@ -262,6 +262,7 @@ set statusline+=\ %{fugitive#statusline()}
 set statusline+=\ ==\ %l/%L             " cursor line/total lines
 set statusline+=\ (%c)\                 " cursor column
 "}}}
+endif
 
 " vim-plug mappings{{{
 nnoremap <silent> ,pc :<C-u>PlugClean<CR>
