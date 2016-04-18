@@ -1,9 +1,21 @@
-alias zshrc="vim ~/.zshrc"
-alias zshalias="vim ~/.zsh_aliases"
+alias zshrc="nvim ~/.zshrc"
+alias zshalias="nvim ~/.zsh_aliases"
 alias myip="wget http://nwdesign.us/myip.php -O - -q ; echo"
 alias gl="git log --graph --oneline --decorate --date-order --color --boundary"
 alias vimrc="nvim ~/.vimrc"
+
+function nvimrc() {
+    if [ -z $XDG_CONFIG_HOME ]; then
+        nvim $XDG_CONFIG_HOME/nvim/init.vim
+    else
+        nvim ~/.config/nvim/init.vim
+    fi
+}
+
 alias ls="ls -GpF"
 alias lc="git diff --stat HEAD^ HEAD"
-alias brewup="brew update && brew upgrade"
-alias nvimup="brew update; brew reinstall --HEAD neovim"
+
+if [ `uname` = "Darwin" ]; then
+    alias brewup="brew update && brew upgrade"
+    alias nvimup="brew update; brew reinstall --HEAD neovim"
+fi
