@@ -5,6 +5,7 @@
 [core]
     autocrlf = false
     excludesfile = ~/.gitexcludes
+    editor = nvim
 [push]
     default = simple
 [i18n]
