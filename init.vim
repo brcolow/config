@@ -88,6 +88,8 @@ if has("persistent_undo")
 endif
 "}}}
 if has('nvim')
+    tnoremap <esc> <c-\><c-n>
+    let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
     if empty(glob('~/.config/nvim/autoload/plug.vim')) && executable('curl')
         execute 'silent !curl -fLo ' . '~/.config/nvim/autoload/plug.vim --create-dirs' 
         \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
