@@ -132,7 +132,7 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'Shougo/deoplete.nvim', Cond(has('nvim'))
     Plug 'benekastah/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
     " let g:ycm_path_to_python_interpreter="C:\\Program Files\\Python\\Python35\\python.exe"
-    Plug 'Valloric/YouCompleteMe', Cond(!has('nvim')), { 'do': 'python install.py --clang-completer --tern-completer' }
+    Plug 'Valloric/YouCompleteMe', Cond(!has('nvim'), { 'do': 'python install.py --clang-completer --tern-completer' })
     " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
     " let g:ycm_collect_identifiers_from_tags_files = 1
 
