@@ -20,5 +20,10 @@ ln -s ${BASEDIR}/init.vim ~/.config/nvim/init.vim
 ln -s ${BASEDIR}/.gitconfig ~/.gitconfig
 ln -s ${BASEDIR}/.gitexcludes ~/.gitexcludes
 
+# Bash
 ln -s ${BASEDIR}/.bashrc ~/.bashrc
+
+# Tmux
+ln -s ${BASEDIR}/.tmux.conf ~/.tmux.conf
+
 

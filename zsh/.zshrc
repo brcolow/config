@@ -1,10 +1,8 @@
 export TERM="xterm-256color"
 export SHELL=/bin/zsh
-export EDITOR=vim
+export EDITOR=nvim
 export LANG=en_US.UTF-8
 export GROOVY_HOME=/usr/local/opt/groovy/libexec
-export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
-export VIM=""
 export GOPATH="$HOME/.go"
 export PATH=$PATH:$GOPATH/bin
 
