@@ -9,14 +9,14 @@ if [ -z "$FONTS_INSTALLED" ]; then
 else
     echo "Powerline fonts are already installed."
 fi
+
 # (Neo)Vim
 ln -s ${BASEDIR}/.vimrc ~/.vimrc
 : ${XCH:=${HOME}/.config}
 ln -s ${BASEDIR}/.vimrc ${XCH}/nvim/init.vim
 
 # ZSH
-git clone https://github.com/zsh-users/antigen.git
-ln -s ${BASEDIR}/antigen/antigen.zsh ~/.antigen/antigen.zsh
+git clone https://github.com/b4b4r07/zplug ~/.zplug
 ln -s ${BASEDIR}/zsh/.zshrc ~/.zshrc
 ln -s ${BASEDIR}/zsh/.zsh_aliases ~/.zsh_aliases
 
