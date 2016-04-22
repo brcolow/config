@@ -1,8 +1,18 @@
 " vim: foldmethod=marker
-set nocompatible
+if !has('nvim') && has('vim_starting')
+    set encoding=utf-8
+endif
+
+if !has('nvim')
+    set ttyfast
+    set visualbell t_vb=
+    set t_Co=256
+else
+    let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+    let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+endif
+
 set shortmess+=c
-set encoding=utf-8
-set ttyfast
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -20,7 +30,6 @@ set complete-=i
 set laststatus=2
 set number
 set noerrorbells
-set visualbell t_vb=
 set tm=500
 set showcmd
 set noshowmode
@@ -31,7 +40,6 @@ set nostartofline
 set wildmode=list:longest
 set wildignore+=*/tmp/*,*/target/*,*.so,*.swp,*.zip,*.class,*.jar,*.exe
 set wildignore+=*DS_Store*,.idea/**,.git,.gitkeep,*.png,*.jpg,*.gif
-
 set list
 set listchars=tab:▸\ ,trail:·,extends:»,precedes:«,nbsp:⎵
 set smartindent
@@ -42,7 +50,6 @@ set completeopt=longest,menuone
 set mouse=a
 set tabpagemax=50
 set timeoutlen=3000
-set t_Co=256
 
 let s:vim_dir = ''
 let s:is_win = 0
@@ -127,24 +134,24 @@ call plug#begin(s:vim_dir . '/bundle')
 
     " Better java.vim syntax highlighting
     Plug 'rudes/vim-java', { 'for' : 'java' }
-    Plug 'NLKNguyen/vim-maven-syntax', { 'for' : 'xml.maven' }
+    Plug 'NLKNguyen/vim-maven-syntax', { 'for': 'xml.maven' }
 
     Plug 'Shougo/deoplete.nvim', Cond(has('nvim'))
+
+    Plug 'zchee/deoplete-clang', Cond(has('nvim'), { 'for': ['c', 'cpp'] })
+    let g:deoplete#sources#clang#libclang_path = "/usr/lib/libclang.so"
+    let g:deoplete#sources#clang#clang_header ="/usr/include/clang/"
+
+    Plug 'zchee/deoplete-jedi', Cond(has('nvim'), { 'for': 'python' })
+
     Plug 'benekastah/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
-    " let g:ycm_path_to_python_interpreter="C:\\Program Files\\Python\\Python35\\python.exe"
     Plug 'Valloric/YouCompleteMe', Cond(!has('nvim'), { 'do': 'python install.py --clang-completer --tern-completer' })
-    " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
-    " let g:ycm_collect_identifiers_from_tags_files = 1
 
     Plug 'scrooloose/syntastic', Cond(!has('nvim'))
-    " let g:syntastic_debug = 1
-    " let g:syntastic_java_javac_config_file_enabled = 1
-    " let g:syntastic_java_javac_delete_output = 0
     let g:syntastic_always_populate_loc_list = 1
     let g:syntastic_error_symbol = '✗'
     let g:syntastic_warning_symbol = '⚠'
     let g:syntastic_auto_loc_list = 1
-    " let g:syntastic_check_on_open = 1
     let g:syntastic_check_on_wq = 0
 
     Plug 'inside/vim-search-pulse'
@@ -164,7 +171,6 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'gaving/vim-textobj-argument'
     " (u)rl
     Plug 'mattn/vim-textobj-url'
-    " Plug 'vim-scripts/swap-parameters'
 call plug#end()
 
 nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
@@ -230,6 +236,12 @@ nmap <silent> <A-Up> :wincmd k<CR>
 nmap <silent> <A-Down> :wincmd j<CR>
 nmap <silent> <A-Left> :wincmd h<CR>
 nmap <silent> <A-Right> :wincmd l<CR>
+if has('nvim')
+    tnoremap <A-Left> <C-\><C-n><C-w>h
+    tnoremap <A-Down> <C-\><C-n><C-w>j
+    tnoremap <A-Up> <C-\><C-n><C-w>k
+    tnoremap <A-Right> <C-\><C-n><C-w>l
+endif
 
 " Sane clipboard settings
 if has('unnamedplus')

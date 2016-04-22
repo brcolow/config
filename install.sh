@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-git clone https://github.com/powerline/fonts.git
-./fonts/install.sh
 
-# Vim
+FONTS_INSTALLED=$(fc-list | grep -i "Roboto Mono for Powerline.ttf");
+if [ -z "$FONT_INSTALLED" ]; then
+    git clone https://github.com/powerline/fonts.git
+    ./fonts/install.sh
+else
+    echo "Powerline fonts are already installed."
+fi
+# (Neo)Vim
 ln -s ${BASEDIR}/.vimrc ~/.vimrc
+: ${XCH:=${HOME}/.config}
+ln -s ${BASEDIR}/.vimrc ${XCH}/nvim/init.vim
 
 # ZSH
 git clone https://github.com/zsh-users/antigen.git
