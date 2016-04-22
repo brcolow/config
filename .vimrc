@@ -237,6 +237,7 @@ nmap <silent> <A-Down> :wincmd j<CR>
 nmap <silent> <A-Left> :wincmd h<CR>
 nmap <silent> <A-Right> :wincmd l<CR>
 if has('nvim')
+    tnoremap <esc> <c-\><c-n>
     tnoremap <A-Left> <C-\><C-n><C-w>h
     tnoremap <A-Down> <C-\><C-n><C-w>j
     tnoremap <A-Up> <C-\><C-n><C-w>k
