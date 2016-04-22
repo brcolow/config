@@ -2,8 +2,8 @@
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-FONTS_INSTALLED=$(fc-list | grep -i "Roboto Mono for Powerline.ttf");
-if [ -z "$FONT_INSTALLED" ]; then
+FONTS_INSTALLED=$(fc-list | grep -i "Roboto Mono for Powerline");
+if [ -z "$FONTS_INSTALLED" ]; then
     git clone https://github.com/powerline/fonts.git
     ./fonts/install.sh
 else
