@@ -260,6 +260,8 @@ nnoremap <silent> ,pn :<C-u>PlugUpgrade<CR>
 " When a window is entered, set nowrap (so nowrap is honored even in splits)
 au! WinEnter * set nowrap
 
+set spelllang=en_us
+autocmd FileType gitcommit setlocal spell textwidth=72
 autocmd FileType gitcommit highlight ColorColumn ctermbg=241 guibg=#2b1d0e
 autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
 
