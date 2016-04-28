@@ -2,9 +2,10 @@ export TERM="xterm-256color"
 export SHELL=/bin/zsh
 export EDITOR=nvim
 export LANG=en_US.UTF-8
-export GROOVY_HOME=/usr/local/opt/groovy/libexec
 export GOPATH="$HOME/.go"
 export PATH=$PATH:$GOPATH/bin
+
+source ~/.zplug/zplug
 
 POWERLEVEL9K_MODE='awesome-fontconfig'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
@@ -18,30 +19,46 @@ set editing-mode emacs
 [ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
 source "$HOME/.antigen/antigen.zsh"
 
-antigen use oh-my-zsh
-antigen bundle git
-antigen bundle brew
-antigen bundle mvn
-antigen bundle compleat
-antigen bundle gitfast
+zplug "zsh-users/zsh-history-substring-search"
+zplug "zsh-users/zsh-syntax-highlighting"
+zplug "zsh-users/zsh-completions"
+zplug "bhilburn/powerlevel9k"
+zplug "lesaint/lesaint-mvn"
+zplug "akoenig/gulp.plugin.zsh"
 
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-history-substring-search
-antigen theme bhilburn/powerlevel9k powerlevel9k
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
 
-antigen-apply
+# Then, source plugins and add commands to $PATH
+zplug load --verbose
+
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' menu select
 
 # Bind up/down keys to use history-substring-search
 zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
-bindkey '^[[1;2C' forward-word
-
 zle -N zle-line-init
-
 setopt no_beep
+setopt hist_ignore_dups
+setopt hist_reduce_blanks
+setopt hist_ignore_space
+setopt correct
+
+# Share zsh histories
+HISTFILE=$HOME/.zsh-history
+HISTSIZE=10000
+SAVEHIST=50000
+setopt inc_append_history
+setopt share_history
+
 export PATH="/usr/local/sbin:$PATH"
 
- # Add RVM to PATH for scripting
-export PATH="$PATH:$HOME/.rvm/bin"
