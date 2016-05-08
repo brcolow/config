@@ -24,6 +24,13 @@ ln -s ${BASEDIR}/zsh/.zsh_aliases ~/.zsh_aliases
 # Git
 ln -s ${BASEDIR}/.gitconfig ~/.gitconfig
 ln -s ${BASEDIR}/.gitexcludes ~/.gitexcludes
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    ln -s ${BASEDIR}/gitconfig.nix.local ~/.gitconfig.local
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    ln -s ${BASEDIR}/gitconfig.mac.local ~/.gitconfig.local
+elif [[ "$OSTYPE" == "cygwin" ]]; then
+    ln -s ${BASEDIR}/gitconfig.win32.local ~/.gitconfig.local
+fi
 
 # Bash
 ln -s ${BASEDIR}/.bashrc ~/.bashrc

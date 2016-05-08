@@ -110,8 +110,10 @@ function! Cond(cond, ...)
     return a:cond ? opts : extend(opts, { 'on': [] })
 endfunction
 
-set background=light " or dark
-colorscheme solarized
+if has('mac')
+    set background=light " or dark
+    colorscheme solarized
+endif
 
 call plug#begin(s:vim_dir . '/bundle')
     Plug 'morhetz/gruvbox', Cond(!has('mac'))

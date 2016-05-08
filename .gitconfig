@@ -35,3 +35,5 @@
     enabled = true
 [github]
     user = brcolow
+[include]
+	path = ~/.gitconfig.local
