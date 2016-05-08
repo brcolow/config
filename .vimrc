@@ -8,8 +8,10 @@ if !has('nvim')
     set visualbell t_vb=
     set t_Co=256
 else
-    " let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
-    " let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+    if has('mac')
+        let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+        let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+    endif
 endif
 
 set shortmess+=c
@@ -108,8 +110,12 @@ function! Cond(cond, ...)
     return a:cond ? opts : extend(opts, { 'on': [] })
 endfunction
 
+set background=light " or dark
+colorscheme solarized
+
 call plug#begin(s:vim_dir . '/bundle')
-    Plug 'morhetz/gruvbox'
+    Plug 'morhetz/gruvbox', Cond(!has('mac'))
+    Plug 'frankier/neovim-colors-solarized-truecolor-only', Cond(has('mac'))
     " Make ctrl-p ignore files in .gitignore
     let g:ctrlp_working_path_mode = 'raw'
     let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
