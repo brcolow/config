@@ -11,7 +11,7 @@ done
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "Running install script from ${BASEDIR} on platform ${OSTYPE}..."
 echo "Force install: ${force}"
-echo "Checking is powerline fonts are installed..."
+echo "Checking if powerline fonts are installed..."
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     FONTS_INSTALLED=$(fc-list | grep -i "Roboto Mono for Powerline");
