@@ -8,7 +8,10 @@ if !has('nvim')
     set visualbell t_vb=
     set t_Co=256
 else
-    " let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+    if has('mac')
+        let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+        let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+    endif
 endif
 
 set shortmess+=c
@@ -107,8 +110,14 @@ function! Cond(cond, ...)
     return a:cond ? opts : extend(opts, { 'on': [] })
 endfunction
 
+if has('mac')
+    set background=light " or dark
+    colorscheme solarized
+endif
+
 call plug#begin(s:vim_dir . '/bundle')
-    Plug 'morhetz/gruvbox'
+    Plug 'morhetz/gruvbox', Cond(!has('mac'))
+    Plug 'frankier/neovim-colors-solarized-truecolor-only', Cond(has('mac'))
     " Make ctrl-p ignore files in .gitignore
     let g:ctrlp_working_path_mode = 'raw'
     let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
@@ -190,36 +199,6 @@ elseif executable('ag')
     let g:ctrlp_user_command = ['ag %s -f -l --nocolor -g "" --hidden --ignore .git']
 endif
 
-if has('gui_running')
-    " width of gvim
-    setglobal columns=230
-    " height of gvim
-    setglobal lines=55
-    " Hide toolbar and menus.
-    setglobal guioptions-=Tt
-    setglobal guioptions-=m
-    " Scrollbar is always off.
-    setglobal guioptions-=rL
-    " Not guitablabel.
-    setglobal guioptions-=e
-    " Confirm without window.
-    setglobal guioptions+=c
-    let g:gruvbox_italic = 0
-    colorscheme gruvbox
-    set bg=dark
-
-    if has('gui_gtk2')
-        set guifont=Inconsolata\ 12
-    elseif has('gui_macvim')
-        set guifont=Menlo\ Regular:h14
-    elseif has('gui_win32')
-        set guifont=DejaVu_Sans_Mono_for_Powerline:h11:cANSI
-        if has('directx')
-            set rop=type:directx,gamma:1.0,contrast:0.5,level:1,geom:1,renmode:4,taamode:1
-        endif
-  endif
-endif
-
 " Never insert <CR> if there are completions
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
 
@@ -293,6 +272,8 @@ nnoremap <silent> ,pn :<C-u>PlugUpgrade<CR>
 " When a window is entered, set nowrap (so nowrap is honored even in splits)
 au! WinEnter * set nowrap
 
+set spelllang=en_us
+autocmd FileType gitcommit setlocal spell textwidth=72
 autocmd FileType gitcommit highlight ColorColumn ctermbg=241 guibg=#2b1d0e
 autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
 
