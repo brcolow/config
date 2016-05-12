@@ -7,7 +7,7 @@ export PATH=$PATH:$GOPATH/bin
 
 source ~/.zplug/zplug
 
-POWERLEVEL9K_MODE='awesome-fontconfig'
+POWERLEVEL9K_MODE='awesome-patched'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
 POWERLEVEl9K_RIGHT_PROMPT_ELEMENTS=(status time)
 POWERLEVEL9K_COLOR_SCHEME='light'

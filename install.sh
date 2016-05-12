@@ -2,10 +2,17 @@
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-FONTS_INSTALLED=$(fc-list | grep -i "Roboto Mono for Powerline");
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    FONTS_INSTALLED=$(fc-list | grep -i "Roboto Mono for Powerline");
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    FONTS_INSTALL=$(fc-list | grep -i source | grep -i 'code pro for powerline');
+fi
+
 if [ -z "$FONTS_INSTALLED" ]; then
     git clone https://github.com/powerline/fonts.git
     ./fonts/install.sh
+    git clone https://github.com/gabrielelana/awesome-terminal-fonts
+    ./awesome-terminal-fonts/install.sh
 else
     echo "Powerline fonts are already installed."
 fi

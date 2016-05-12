@@ -110,11 +110,6 @@ function! Cond(cond, ...)
     return a:cond ? opts : extend(opts, { 'on': [] })
 endfunction
 
-if has('mac')
-    set background=light " or dark
-    colorscheme solarized
-endif
-
 call plug#begin(s:vim_dir . '/bundle')
     Plug 'morhetz/gruvbox', Cond(!has('mac'))
     Plug 'frankier/neovim-colors-solarized-truecolor-only', Cond(has('mac'))
@@ -180,6 +175,11 @@ call plug#begin(s:vim_dir . '/bundle')
     " (u)rl
     Plug 'mattn/vim-textobj-url'
 call plug#end()
+
+if has('mac')
+    set background=light " or dark
+    colorscheme solarized
+endif
 
 nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
