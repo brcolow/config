@@ -9,7 +9,6 @@ if !has('nvim')
     set t_Co=256
 else
     " let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
-    " let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
 endif
 
 set shortmess+=c
@@ -136,6 +135,9 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'rudes/vim-java', { 'for' : 'java' }
     Plug 'NLKNguyen/vim-maven-syntax', { 'for': 'xml.maven' }
 
+    let g:deoplete#enable_at_startup = 1
+    let g:deoplete#auto_complete_start_length = 1
+
     Plug 'Shougo/deoplete.nvim', Cond(has('nvim'))
 
     Plug 'zchee/deoplete-clang', Cond(has('nvim'), { 'for': ['c', 'cpp'] })
@@ -146,6 +148,7 @@ call plug#begin(s:vim_dir . '/bundle')
 
     Plug 'benekastah/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
     Plug 'Valloric/YouCompleteMe', Cond(!has('nvim'), { 'do': 'python install.py --clang-completer --tern-completer' })
+    Plug 'pangloss/vim-javascript', { 'for' : 'javascript' }
 
     Plug 'scrooloose/syntastic', Cond(!has('nvim'))
     let g:syntastic_always_populate_loc_list = 1
