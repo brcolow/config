@@ -6,6 +6,8 @@
     autocrlf = false
     excludesfile = ~/.gitexcludes
     editor = nvim
+[include]
+    path = ~/.gitconfig.local
 [push]
     default = simple
 [i18n]
