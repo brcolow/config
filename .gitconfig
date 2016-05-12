@@ -6,6 +6,9 @@
     autocrlf = false
     excludesfile = ~/.gitexcludes
     editor = nvim
+    filemode = false
+[include]
+    path = ~/.gitconfig.local
 [push]
     default = simple
 [i18n]
@@ -35,5 +38,3 @@
     enabled = true
 [github]
     user = brcolow
-[include]
-	path = ~/.gitconfig.local
