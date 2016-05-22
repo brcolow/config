@@ -185,36 +185,6 @@ elseif executable('ag')
     let g:ctrlp_user_command = ['ag %s -f -l --nocolor -g "" --hidden --ignore .git']
 endif
 
-if has('gui_running')
-    " width of gvim
-    setglobal columns=230
-    " height of gvim
-    setglobal lines=55
-    " Hide toolbar and menus.
-    setglobal guioptions-=Tt
-    setglobal guioptions-=m
-    " Scrollbar is always off.
-    setglobal guioptions-=rL
-    " Not guitablabel.
-    setglobal guioptions-=e
-    " Confirm without window.
-    setglobal guioptions+=c
-    let g:gruvbox_italic = 0
-    colorscheme gruvbox
-    set bg=dark
-
-    if has('gui_gtk2')
-        set guifont=Inconsolata\ 12
-    elseif has('gui_macvim')
-        set guifont=Menlo\ Regular:h14
-    elseif has('gui_win32')
-        set guifont=DejaVu_Sans_Mono_for_Powerline:h11:cANSI
-        if has('directx')
-            set rop=type:directx,gamma:1.0,contrast:0.5,level:1,geom:1,renmode:4,taamode:1
-        endif
-  endif
-endif
-
 " Never insert <CR> if there are completions
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
 
@@ -222,9 +192,27 @@ inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
 " register)
 nnoremap <expr> dd empty(getline('.')) ? '"_dd' : 'dd'
 
+let mapleader="\<Space>"
 nnoremap Y y$
-nnoremap ,so :<C-u>source $MYVIMRC<CR>
-nnoremap ,rc :<C-u>edit $MYVIMRC<CR>
+nnoremap <Leader>so :<C-u>source $MYVIMRC<CR>
+nnoremap <Leader>rc :<C-u>edit $MYVIMRC<CR>
+nnoremap <Leader>q :quit<CR>
+
+" number mode cycling from https://github.com/wincent
+" Cycle through relativenumber + number, number (only), and no numbering.
+function! Cycle_numbering() abort
+  if exists('+relativenumber')
+    execute {
+          \ '00': 'set relativenumber   | set number',
+          \ '01': 'set norelativenumber | set number',
+          \ '10': 'set norelativenumber | set nonumber',
+          \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
+  else
+    " No relative numbering, just toggle numbers on and off.
+    set number!<CR>
+  endif
+endfunction
+nnoremap <silent> <Leader>n :call Cycle_numbering()<CR>
 
 " Open help files in new tab
 autocmd BufEnter *.txt if &buftype == 'help' | silent wincmd T | endif
@@ -234,6 +222,21 @@ nmap <silent> <A-Up> :wincmd k<CR>
 nmap <silent> <A-Down> :wincmd j<CR>
 nmap <silent> <A-Left> :wincmd h<CR>
 nmap <silent> <A-Right> :wincmd l<CR>
+if has('nvim')
+    tnoremap <esc> <c-\><c-n>
+    tnoremap <A-Left> <C-\><C-n><C-w>h
+    tnoremap <A-Down> <C-\><C-n><C-w>j
+    tnoremap <A-Up> <C-\><C-n><C-w>k
+    tnoremap <A-Right> <C-\><C-n><C-w>l
+endif
+
+" "|" opens verical split, "_" opens horizontal split
+nnoremap <expr><silent> \| !v:count ? "<C-W>v<C-W><Right>" : '\|'
+nnoremap <expr><silent> _  !v:count ? "<C-W>s<C-W><Down>"  : '_' 
+
+" Cycle through windows
+nmap <Tab> <C-W>w
+nmap <S-Tab> <C-W>W
 
 " Sane clipboard settings
 if has('unnamedplus')
@@ -273,6 +276,8 @@ nnoremap <silent> ,pn :<C-u>PlugUpgrade<CR>
 " When a window is entered, set nowrap (so nowrap is honored even in splits)
 au! WinEnter * set nowrap
 
+set spelllang=en_us
+autocmd FileType gitcommit setlocal spell textwidth=72
 autocmd FileType gitcommit highlight ColorColumn ctermbg=241 guibg=#2b1d0e
 autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
 
@@ -297,3 +302,6 @@ endif
 
 au BufRead,BufNewFile *.fxml set filetype=xml
 "}}}
+
+" Jump to last position on opening file
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
