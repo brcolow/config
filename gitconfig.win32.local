@@ -6,3 +6,7 @@
     program = C:/Program Files (x86)/GNU/GnuPG/gpg2.exe
 [credential]
 	helper = manager
+[merge]
+    tool = p4merge
+[mergetool "p4merge"]
+    cmd = "C:/Program Files/Perforce/p4merge.exe"
