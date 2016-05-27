@@ -100,6 +100,10 @@ fi
 link ${BASEDIR}/.vimrc ${REHOME}.vimrc
 link ${BASEDIR}/.gvimrc ${REHOME}.gvimrc
 : ${XCH:=${REHOME}/.config}
+if [[ "$OSTYPE" == "cygwin" ]]; then
+    XCH=$(cygpath -w ${APPDATA}/../Local)
+fi
+exit
 link ${BASEDIR}/.vimrc ${XCH}/nvim/init.vim
 
 # ZSH

@@ -226,6 +226,9 @@ if has('nvim')
     tnoremap <A-Right> <C-\><C-n><C-w>l
 endif
 
+nnoremap <expr><silent> \| !v:count ? "<C-W>v<C-W><Right>" : '\|'
+nnoremap <expr><silent> _  !v:count ? "<C-W>s<C-W><Down>"  : '_' 
+
 " Sane clipboard settings
 if has('unnamedplus')
     set clipboard^=unnamedplus
