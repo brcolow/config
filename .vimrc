@@ -36,7 +36,7 @@ set tm=500
 set showcmd
 set noshowmode
 set autoread
-set fileformats+=mac
+set fileformats=unix,dos
 set history=10000
 set nostartofline
 set wildmode=list:longest
@@ -117,6 +117,7 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:ctrlp_working_path_mode = 'raw'
     let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
     Plug 'ctrlpvim/ctrlp.vim'
+    let g:gutentags_cache_dir = s:vim_dir . '/tags'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-fugitive'

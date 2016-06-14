@@ -1,11 +1,11 @@
 [core]
-	editor = gvim --nofork '%*'
+    editor = gvim --nofork '%*'
 [difftool]
     cmd = 'C:/Program Files (x86)/WinMerge/WinMergeU.exe' \"$LOCAL\" \"$REMOTE\"
 [gpg]
     program = C:/Program Files (x86)/GNU/GnuPG/gpg2.exe
 [credential]
-	helper = manager
+    helper = manager
 [merge]
     tool = p4merge
 [mergetool "p4merge"]

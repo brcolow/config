@@ -7,8 +7,10 @@
     excludesfile = ~/.gitexcludes
     editor = nvim
     filemode = false
+[diff]
+    compactionHeuristic = true
 [include]
-    path = ~/.gitconfig.local
+    path = C:\\Users\\brcolow\\.gitconfig.local
 [push]
     default = simple
 [i18n]
