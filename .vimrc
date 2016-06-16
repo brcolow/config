@@ -99,6 +99,21 @@ if has("persistent_undo")
 endif
 "}}}
 
+
+function! s:CycleNumbering()
+    " (off number relativenumber)
+    if &number && !&relativenumber
+        setlocal relativenumber
+    elseif &relativenumber
+        setlocal norelativenumber
+        setlocal nonumber
+    else
+        setlocal number
+    endif
+endfunction
+
+nnoremap <silent> <Leader>n :call <SID>CycleNumbering()<CR>
+
 if empty(glob(s:vim_dir . '/autoload/plug.vim'))
 execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
     \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -130,9 +145,15 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_theme = 'papercolor'
 
+    let g:tagbar_sort = 0
     Plug 'majutsushi/tagbar'
     noremap <silent> <F2> :TagbarToggle<CR>
-
+    
+    let g:localvimrc_sandbox = 0
+    let g:localvimrc_debug = 1
+    let g:localvimrc_persistent = 1
+    let g:localvimrc_name = [".lvimrc", "contrib/.lvimrc"]
+    Plug 'embear/vim-localvimrc'
     let g:JavaComplete_UsePython3 = 1
     Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
@@ -198,6 +219,14 @@ elseif executable('ag')
     let &grepprg = 'ag --vimgrep $*'
     let &grepformat=%f:%l:%c:%m
     let g:ctrlp_user_command = ['ag %s -f -l --nocolor -g "" --hidden --ignore .git']
+endif
+
+" Remember last cursor position.
+if line("'\"") > 1 && line("'\"") <= line('$')
+    " Unless it's a commit message.
+    if &filetype !=# 'gitcommit'
+        exe "normal! g'\""
+    endif
 endif
 
 " Never insert <CR> if there are completions
