@@ -1,45 +1,5 @@
 #!/usr/bin/env bash
-# Cross-platform symlink function. With one parameter, it will check
-# whether the parameter is a symlink. With two parameters, it will create
-# a symlink to a file or directory, with syntax: link $linkname $target
-link() {
-    if [[ -z "$2" ]]; then
-        # Link-checking mode.
-        if [[ "$OSTYPE" == "cygwin" ]]; then
-            fsutil reparsepoint query "$2" > /dev/null
-        else
-            [[ -h "$2" ]]
-        fi
-    else
-        # Link-creation mode.
-        if [[ "$OSTYPE" == "cygwin" ]]; then
-            # Windows needs to be told if it's a directory or not. Infer that.
-            # Also: note that we convert `/` to `\`. In this case it's necessary.
-            if [[ -d "$2" ]]; then
-                cmd <<< "mklink /D \"$2\" \"${1//\//\\}\"" > /dev/null
-            else
-                cmd <<< "mklink \"$2\" \"${1//\//\\}\"" > /dev/null
-            fi
-        else
-            ln -s "$2" "$1"
-        fi
-    fi
-}
-
 # Remove a link, cross-platform.
-rmlink() {
-    if [[ "$OSTYPE" == "cygwin" ]]; then
-        # Again, Windows needs to be told if it's a file or directory.
-        if [[ -d "$1" ]]; then
-            rmdir "$1";
-        else
-            rm "$1"
-        fi
-    else
-        rm "$1"
-    fi
-}
-
 force='false'
 
 while getopts 'f' flag; do
@@ -49,16 +9,21 @@ while getopts 'f' flag; do
   esac
 done
 
-BASEDIR="$(cygpath -w $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+if [[ "$OSTYPE" == "cygwin" ]]; then
+    BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+else
+    BASEDIR="$(cygpath -w $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+fi
 
 if [[ "$OSTYPE" == "cygwin" ]]; then
     REHOME=$(cygpath -w "${BASEDIR}"/..)
 else
     REHOME="{$HOME}/"
 fi
-echo "${REHOME}"
-echo "Running install script from ${BASEDIR} on platform ${OSTYPE}..."
-echo "Force install: ${force}"
+:echo "~/"
+echo "Running install script from \"${BASEDIR}\""
+echo "Detected platform: \"${OSTYPE}\""
+echo "Is force install? ${force}"
 echo "Checking if powerline fonts are installed..."
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -79,51 +44,52 @@ if [ -z "$FONTS_INSTALLED" ]; then
         git clone https://github.com/gabrielelana/awesome-terminal-fonts
         ./awesome-terminal-fonts/install.sh
     fi
-else
     echo "✔ Powerline fonts installed!"
+else
+    echo "✔ Powerline fonts already installed"
 fi
 
 if [[ $force = true ]]; then
-    rmlink ${REHOME}.vimrc
-    rmlink ${REHOME}.gvimrc
-    rmlink ${REHOME}.config/nvim/init.vim
-    rmlink ${REHOME}.zshrc
-    rmlink ${REHOME}.zsh_aliases
-    rmlink ${REHOME}.gitconfig
-    rmlink ${REHOME}.gitexcludes
-    rmlink ${REHOME}.gitconfig.local
-    rmlink ${REHOME}.bashrc
-    rmlink ${REHOME}.tmux.conf
+    echo "Removing existing dotfile links..."
+    rm ~/.vimrc
+    rm ~/.gvimrc
+    rm ~/.config/nvim/init.vim
+    rm ~/.zshrc
+    rm ~/.zsh_aliases
+    rm ~/.gitconfig
+    rm ~/.gitexcludes
+    rm ~/.gitconfig.local
+    rm ~/.bashrc
+    rm ~/.tmux.conf
+    echo "✔ Existing links removed"
 fi
 
 # (Neo)Vim
-link ${BASEDIR}/.vimrc ${REHOME}.vimrc
-link ${BASEDIR}/.gvimrc ${REHOME}.gvimrc
-: ${XCH:=${REHOME}/.config}
+echo "Creating dotfile links..."
 if [[ "$OSTYPE" == "cygwin" ]]; then
-    XCH=$(cygpath -w ${APPDATA}/../Local)
+    start link.bat
+else
+    ln -sf ${BASEDIR}/.vimrc ~/.vimrc
+    ln -sf ${BASEDIR}/.gvimrc ~/.gvimrc
+    : ${XCH:=~/.config}
+    ln -sf ${BASEDIR}/.vimrc ${XCH}/nvim/init.vim
+
+    # ZSH
+    git clone https://github.com/b4b4r07/zplug ~/.zplug
+    ln -sf ${BASEDIR}/zsh/.zshrc ~/.zshrc
+    ln -sf ${BASEDIR}/zsh/.zsh_aliases ~/.zsh_aliases
+
+    # Git
+    ln -sf ${BASEDIR}/.gitconfig ~/.gitconfig
+    ln -sf ${BASEDIR}/.gitexcludes ~/.gitexcludes
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        ln -sf ${BASEDIR}/gitconfig.nix.local ~/.gitconfig.local
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        ln -sf ${BASEDIR}/gitconfig.mac.local ~/.gitconfig.local
+    fi
+
+    ln -sf ${BASEDIR}/.bashrc ~/.bashrc
+    ln -sf ${BASEDIR}/.tmux.conf ~/.tmux.conf
 fi
-exit
-link ${BASEDIR}/.vimrc ${XCH}/nvim/init.vim
 
-# ZSH
-git clone https://github.com/b4b4r07/zplug ${REHOME}.zplug
-link ${BASEDIR}/zsh/.zshrc ${REHOME}.zshrc
-link ${BASEDIR}/zsh/.zsh_aliases ${REHOME}.zsh_aliases
-
-# Git
-link ${BASEDIR}/.gitconfig ${REHOME}.gitconfig
-link ${BASEDIR}/.gitexcludes ${REHOME}.gitexcludes
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    link ${BASEDIR}/gitconfig.nix.local ${REHOME}.gitconfig.local
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    link ${BASEDIR}/gitconfig.mac.local ${REHOME}.gitconfig.local
-elif [[ "$OSTYPE" == "cygwin" ]]; then
-    link ${BASEDIR}/gitconfig.win32.local ${REHOME}.gitconfig.local
-fi
-
-# Bash
-link ${BASEDIR}/.bashrc ${REHOME}.bashrc
-
-# Tmux
-link ${BASEDIR}/.tmux.conf ${REHOME}.tmux.conf
+echo "✔ Dotfile links created"

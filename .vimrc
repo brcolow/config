@@ -153,7 +153,7 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:localvimrc_debug = 1
     let g:localvimrc_persistent = 1
     let g:localvimrc_name = [".lvimrc", "contrib/.lvimrc"]
-    Plug 'embear/vim-localvimrc'
+    " Plug 'embear/vim-localvimrc'
     let g:JavaComplete_UsePython3 = 1
     Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
@@ -190,7 +190,7 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:vim_search_pulse_duration = 200
     nmap n n<Plug>Pulse
     nmap N N<Plug>Pulse
-
+    Plug 'chase/vim-ansible-yaml'
     Plug 'kana/vim-textobj-user'
     " (l)ine
     Plug 'kana/vim-textobj-line'
