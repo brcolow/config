@@ -10,7 +10,7 @@
 [diff]
     compactionHeuristic = true
 [include]
-    path = C:\\Users\\brcolow\\.gitconfig.local
+    path = ~/.gitconfig.local
 [push]
     default = simple
 [i18n]

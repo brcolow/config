@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
-# Remove a link, cross-platform.
-force='false'
+force=false
 
 while getopts 'f' flag; do
   case "${flag}" in
-    f) force='true' ;;
+    f) force=true ;;
     *) error "Unexpected option ${flag}" ;;
   esac
 done
 
 if [[ "$OSTYPE" == "cygwin" ]]; then
-    BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-else
     BASEDIR="$(cygpath -w $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+else
+    BASEDIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 fi
 
 if [[ "$OSTYPE" == "cygwin" ]]; then
@@ -24,18 +23,18 @@ fi
 echo "Running install script from \"${BASEDIR}\""
 echo "Detected platform: \"${OSTYPE}\""
 echo "Is force install? ${force}"
-echo "Checking if powerline fonts are installed..."
+echo "Checking if powerline fonts are installed…"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     FONTS_INSTALLED=$(fc-list | grep -i "Roboto Mono for Powerline");
-elif [[ "$OSTYPE" == "darwin"* ]]; then
+elif [[ "$OSTYPE" == "darwin" ]]; then
     FONTS_INSTALLED=$(fc-list | grep -i source | grep -i 'code pro for powerline');
 elif [[ "$OSTYPE" == "cygwin" ]]; then
     FONTS_INSTALLED=$(powershell -Command \"Test-Path -Path \"C:\\Windows\\Fonts\\Sauce Code Powerline Regular.otf\"\");
 fi
 
 if [ -z "$FONTS_INSTALLED" ]; then
-    echo "✘ Powerline fonts not installed. Installing..."
+    echo "✘ Powerline fonts not installed. Installing…"
     if [[ "$OSTYPE" == "cygwin" ]]; then
         powershell -executionPolicy bypass -noexit -file "InstallFonts.ps1"
     else
@@ -49,8 +48,8 @@ else
     echo "✔ Powerline fonts already installed"
 fi
 
-if [[ $force = true ]]; then
-    echo "Removing existing dotfile links..."
+if [ "$force" = true ]; then
+    echo "Removing existing dotfile links…"
     rm ~/.vimrc
     rm ~/.gvimrc
     rm ~/.config/nvim/init.vim
@@ -65,8 +64,8 @@ if [[ $force = true ]]; then
 fi
 
 # (Neo)Vim
-echo "Creating dotfile links..."
-if [[ "$OSTYPE" == "cygwin" ]]; then
+echo "Creating dotfile links…"
+if [ "$OSTYPE" == "cygwin" ]; then
     start link.bat
 else
     ln -sf ${BASEDIR}/.vimrc ~/.vimrc

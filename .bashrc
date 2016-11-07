@@ -1,3 +1,6 @@
+export DISPLAY=:0
+export TERM=xterm-256color
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -7,6 +10,11 @@ shopt -s histappend
 
 # unlimited history
 HISTSIZE=-1 HISTFILESIZE=-1
+
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-searchforward'
+
+eval `dircolors /home/brcolow/.dir_colors`
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -19,8 +27,32 @@ if ! shopt -oq posix; then
   fi
 fi
 
-alias grep="/usr/bin/grep $GREP_OPTIONS"
 unset GREP_OPTIONS
+alias grep="/usr/bin/grep $GREP_OPTIONS"
 alias ls='ls --color'
+alias aptup='sudo apt-get update && sudo apt-get upgrade'
+alias crypt='cd /mnt/c/code/cryptodash'
+alias cent='cd /mnt/c/code/centurion'
+alias web='cd /mnt/c/code/web/cryptodash'
+alias glacier='/mnt/c/code/cryptodash/scripts/glacier_backup.sh'
 
-. ~/.bash-git-prompt/gitprompt.sh
+export NVM_DIR="/home/brcolow/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+export FZF_DEFAULT_COMMAND='ag --hidden -g ""'
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+export PATH="$PATH:/usr/sbin:/.rvm/bin:/.local/bin:$HOME/bin"
+
+# ssh-agent configuration
+if [ -z "$(pgrep ssh-agent)" ]; then
+    rm -rf /tmp/ssh-*
+    eval $(ssh-agent -s) > /dev/null
+else
+    export SSH_AGENT_PID=$(pgrep ssh-agent)
+    export SSH_AUTH_SOCK=$(find /tmp/ssh-* -name agent.*)
+fi
+
+if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
+    ssh-add
+fi
