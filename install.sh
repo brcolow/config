@@ -19,7 +19,6 @@ if [[ "$OSTYPE" == "cygwin" ]]; then
 else
     REHOME="{$HOME}/"
 fi
-:echo "~/"
 echo "Running install script from \"${BASEDIR}\""
 echo "Detected platform: \"${OSTYPE}\""
 echo "Is force install? ${force}"
@@ -60,6 +59,7 @@ if [ "$force" = true ]; then
     rm ~/.gitconfig.local
     rm ~/.bashrc
     rm ~/.tmux.conf
+    rm -rf ~/.zplug
     echo "✔ Existing links removed"
 fi
 
