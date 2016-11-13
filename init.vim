@@ -1,9 +1,17 @@
 " vim: foldmethod=marker
 if !has('nvim') && has('vim_starting')
-     set encoding=utf-8
+    set encoding=utf-8
 endif
+
+if !has('nvim')
+    set ttyfast
+else
+    let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+    set termguicolors
+    let g:python3_host_prog = '/usr/bin/python3'
+endif
+
 set shortmess+=c
-set ttyfast
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -20,18 +28,22 @@ set smarttab
 set complete-=i
 set laststatus=2
 set number
-set noerrorbells visualbell t_vb=
+set noerrorbells
 set tm=500
 set showcmd
 set noshowmode
 set autoread
-set fileformats+=mac
+set fileformats=unix,dos
 set history=10000
 set nostartofline
 set wildmode=list:longest
 set wildignore+=*/tmp/*,*/target/*,*.so,*.swp,*.zip,*.class,*.jar,*.exe
+set wildignore+=*DS_Store*,.idea/**,.git,.gitkeep,*.png,*.jpg,*.gif
+set wildignore+=*.o
+set wildignore+=*/node_modules/**
+set wildignore+=*/bower_components/**
 set list
-set listchars=tab:»-,trail:·,extends:>,precedes:<,nbsp:¤
+set listchars=tab:â–¸\ ,trail:Â·,extends:Â»,precedes:Â«,nbsp:âŽµ
 set smartindent
 set shiftround
 set splitright
@@ -40,7 +52,11 @@ set completeopt=longest,menuone
 set mouse=a
 set tabpagemax=50
 set timeoutlen=3000
-" set t_Co=256
+set visualbell t_vb=
+if has('nvim-0.2.0')
+    set inccommand=split
+endif
+
 
 let s:vim_dir = ''
 let s:is_win = 0
@@ -87,28 +103,37 @@ if has("persistent_undo")
     endif
 endif
 "}}}
-if has('nvim')
-    tnoremap <esc> <c-\><c-n>
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
-    if empty(glob('~/.config/nvim/autoload/plug.vim')) && executable('curl')
-        execute 'silent !curl -fLo ' . '~/.config/nvim/autoload/plug.vim --create-dirs' 
-        \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-        autocmd VimEnter * PlugInstall | source $MYVIMRC
+
+function! s:CycleNumbering()
+    " (off number relativenumber)
+    if &number && !&relativenumber
+        setlocal relativenumber
+    elseif &relativenumber
+        setlocal norelativenumber
+        setlocal nonumber
+    else
+        setlocal number
     endif
-else
-    if empty(glob(s:vim_dir . '/autoload/plug.vim')) && executable('curl')
-        execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs ' 
-         \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-        autocmd VimEnter * PlugInstall | source $MYVIMRC
-    endif
+endfunction
+
+nnoremap <silent> <Space>n :call <SID>CycleNumbering()<CR>
+
+if empty(glob(s:vim_dir . '/autoload/plug.vim'))
+execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
+    \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
-try
+function! Cond(cond, ...)
+    let opts = get(a:000, 0, {})
+    return a:cond ? opts : extend(opts, { 'on': [] })
+endfunction
+
 call plug#begin(s:vim_dir . '/bundle')
-    Plug 'morhetz/gruvbox'
-    " Make ctrl-p ignore files in .gitignore
-    let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'joshdick/onedark.vim'
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
+    let g:gutentags_cache_dir = s:vim_dir . '/tags'
     Plug 'ludovicchabant/vim-gutentags'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-fugitive'
@@ -119,36 +144,48 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'vim-airline/vim-airline-themes'
     Plug 'vim-airline/vim-airline'
     let g:airline#extensions#tabline#enabled = 1
-    let g:airline_theme='solarized dark'
+    let g:airline#extensions#neomake#enabled = 0
+    let g:airline_theme = 'onedark'
 
+    Plug 'mhinz/vim-grepper'
+    nnoremap <silent> <Space>g :Grepper -tool ag -switch<cr>
+    let g:tagbar_sort = 0
     Plug 'majutsushi/tagbar'
     noremap <silent> <F2> :TagbarToggle<CR>
 
+    let g:localvimrc_sandbox = 0
+    let g:localvimrc_debug = 1
+    let g:localvimrc_persistent = 1
+    let g:localvimrc_name = [".lvimrc", "contrib/.lvimrc"]
+    " Plug 'embear/vim-localvimrc'
     let g:JavaComplete_UsePython3 = 1
     Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
     " Better java.vim syntax highlighting
     Plug 'rudes/vim-java', { 'for' : 'java' }
-    Plug 'NLKNguyen/vim-maven-syntax', { 'for' : 'xml.maven' }
+    Plug 'NLKNguyen/vim-maven-syntax', { 'for': 'xml.maven' }
 
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim'
-        Plug 'benekastah/neomake'
-    else
-        let g:ycm_path_to_python_interpreter="C:\\Program Files\\Python\\Python35\\python.exe"
-        Plug 'Valloric/YouCompleteMe', { 'do': 'python install.py --clang-completer --tern-completer' }
-        " let g:ycm_semantic_triggers =  { 'java,jsp' : ['::'] } " You cannot remove the default triggers, only add new ones.
-        " let g:ycm_collect_identifiers_from_tags_files = 1
+    let g:deoplete#enable_at_startup = 1
+    let g:deoplete#auto_complete_start_length = 1
+    Plug 'Shougo/deoplete.nvim', Cond(has('nvim'))
 
-        Plug 'scrooloose/syntastic'
-        let g:syntastic_java_javac_config_file_enabled = 1
-        let g:syntastic_java_javac_delete_output = 0
-        let g:syntastic_always_populate_loc_list = 1
-        let g:syntastic_auto_loc_list = 1
-        let g:syntastic_check_on_open = 1
-        let g:syntastic_check_on_wq = 0
-    endif
+    let g:deoplete#sources#clang#libclang_path = "/usr/lib/llvm-3.4/lib/libclang.so"
+    let g:deoplete#sources#clang#clang_header = "/usr/include/clang/3.4/include"
+    Plug 'zchee/deoplete-clang', Cond(has('nvim'), { 'for': ['c', 'cpp'] })
+    Plug 'zchee/deoplete-jedi', Cond(has('nvim'), { 'for': 'python' })
+    Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), { 'for': ['javascript', 'javascript.jsx'] })
+    let g:deoplete#sources = {}
+    let g:deoplete#sources.javascript = ['ternjs']
 
+    let g:neomake_open_list = 1
+    Plug 'neomake/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
+    let g:neomake_javascript_enabled_makers = ['eslint']
+    let g:neomake_java_enabled_makers = ['javac']
+    let g:neomake_sass_enabled_makers = ['sass-lint']
+    let g:neomake_sql_enabled_makers = ['sqlint']
+    let g:neomake_sh_enabled_makers = ['shellcheck']
+
+    Plug 'othree/yajs.vim', { 'for': 'javascript' }
     Plug 'inside/vim-search-pulse'
     let g:vim_search_pulse_mode = 'pattern'
     let g:vim_search_pulse_disable_auto_mappings = 1
@@ -156,33 +193,32 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:vim_search_pulse_duration = 200
     nmap n n<Plug>Pulse
     nmap N N<Plug>Pulse
-
+    Plug 'chase/vim-ansible-yaml'
     Plug 'kana/vim-textobj-user'
-    " (l)ine
-    Plug 'kana/vim-textobj-line'
-    " (f)unction / method
-    Plug 'kana/vim-textobj-function', { 'for': ['cpp', 'c', 'java', 'vim' ] }
-    " (a)rgument
-    Plug 'gaving/vim-textobj-argument'
-    " (u)rl
-    Plug 'mattn/vim-textobj-url'
-    Plug 'vim-scripts/swap-parameters'
+    Plug 'kana/vim-textobj-line' " (l)ine
+    Plug 'kana/vim-textobj-function', { 'for': ['cpp', 'c', 'java', 'vim' ] } " (f)unction/method
+    Plug 'gaving/vim-textobj-argument' " (a)rgument
+    Plug 'mattn/vim-textobj-url' " (u)rl
 call plug#end()
-catch /E117:/
-    echohl ErrorMsg | echom 'Could not auto-install vim-plug...check curl' | echohl None
-endtry
+
+if has('mac')
+    set background=light " or dark
+    colorscheme solarized
+else
+    colorscheme onedark
+endif
+
 nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 filetype plugin indent on
 syntax enable
 
-if executable('pt')
-    let &grepprg = 'pt --nogroup --nocolor'
-    let g:ctrlp_user_command = ['pt --nocolor -g "\\*" %s']
-elseif executable('ag')
-    let &grepprg = 'ag --vimgrep $*'
-    let &grepformat=%f:%l:%c:%m
-    let g:ctrlp_user_command = ['ag %s -f -l --nocolor -g "" --hidden --ignore .git']
+" Remember last cursor position.
+if line("'\"") > 1 && line("'\"") <= line('$')
+    " Unless it's a commit message.
+    if &filetype !=# 'gitcommit'
+        exe "normal! g'\""
+    endif
 endif
 
 " Never insert <CR> if there are completions
@@ -192,27 +228,9 @@ inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
 " register)
 nnoremap <expr> dd empty(getline('.')) ? '"_dd' : 'dd'
 
-let mapleader="\<Space>"
 nnoremap Y y$
-nnoremap <Leader>so :<C-u>source $MYVIMRC<CR>
-nnoremap <Leader>rc :<C-u>edit $MYVIMRC<CR>
-nnoremap <Leader>q :quit<CR>
-
-" number mode cycling from https://github.com/wincent
-" Cycle through relativenumber + number, number (only), and no numbering.
-function! Cycle_numbering() abort
-  if exists('+relativenumber')
-    execute {
-          \ '00': 'set relativenumber   | set number',
-          \ '01': 'set norelativenumber | set number',
-          \ '10': 'set norelativenumber | set nonumber',
-          \ '11': 'set norelativenumber | set number' }[&number . &relativenumber]
-  else
-    " No relative numbering, just toggle numbers on and off.
-    set number!<CR>
-  endif
-endfunction
-nnoremap <silent> <Leader>n :call Cycle_numbering()<CR>
+nnoremap ,so :<C-u>source $MYVIMRC<CR>
+nnoremap ,rc :<C-u>edit $MYVIMRC<CR>
 
 " Open help files in new tab
 autocmd BufEnter *.txt if &buftype == 'help' | silent wincmd T | endif
@@ -230,13 +248,8 @@ if has('nvim')
     tnoremap <A-Right> <C-\><C-n><C-w>l
 endif
 
-" "|" opens verical split, "_" opens horizontal split
 nnoremap <expr><silent> \| !v:count ? "<C-W>v<C-W><Right>" : '\|'
-nnoremap <expr><silent> _  !v:count ? "<C-W>s<C-W><Down>"  : '_' 
-
-" Cycle through windows
-nmap <Tab> <C-W>w
-nmap <S-Tab> <C-W>W
+nnoremap <expr><silent> _  !v:count ? "<C-W>s<C-W><Down>"  : '_'
 
 " Sane clipboard settings
 if has('unnamedplus')
@@ -246,7 +259,8 @@ else
 endif
 
 " statusline{{{
-hi User1 ctermfg=4 guifg=#40ffff " Identifier
+if 0
+hi User1 ctermfg=4 guifg=#40ffff  " Identifier
 hi User5 ctermfg=10 guifg=#80a0ff " Comment
 
 function! Slash()
@@ -261,6 +275,13 @@ set statusline=
 set statusline+=%5*%{expand('%:h')}     " Relative path to file dir
 set statusline+=%{Slash()}%*
 set statusline+=%1*%t%*                 " file name
+set statusline+=%2*\ %{strlen(&ft)?&ft:'none'}
+set statusline+=\ [%{&fileformat}]
+set statusline+=\ %{&encoding}
+set statusline+=\ %{fugitive#statusline()}
+set statusline+=\ ==\ %l/%L             " cursor line/total lines
+set statusline+=\ (%c)\                 " cursor column
+endif
 "}}}
 
 " vim-plug mappings{{{
@@ -289,19 +310,60 @@ autocmd FileType java let &colorcolumn=join(range(120,999),",")
 autocmd FileType java setlocal tabstop=4 shiftwidth=4 expandtab copyindent softtabstop=0
 autocmd FileType java setlocal makeprg=mvn
 autocmd FileType java setlocal errorformat=[%tRROR]\ %f:[%l]\ %m,%-G%.%#
-nmap <F4> <Plug>(JavaComplete-Imports-AddSmart)
-
-let g:neomake_java_enabled_makers = ['javac']
-let g:neomake_mvn_args = ['package', '-pl', 'core', '-P', 'fastest', '-T', '2']
-
-if exists("g:loaded_dispatch")
-    autocmd Filetype java nnoremap <S-F10> :Make install -P fastest -pl core -am -T 0.5C<cr>
-else
-    autocmd Filetype java nnoremap <S-F10> :make install -P fastest -pl core -am -T 0.5C<cr>
-endif
+nmap ,im <Plug>(JavaComplete-Imports-AddSmart)
+let g:java_highlight_all = 1
+let g:java_highlight_debug = 1
+let g:java_highlight_functions = 1
+let g:java_allow_cpp_keywords = 1
 
 au BufRead,BufNewFile *.fxml set filetype=xml
 "}}}
 
-" Jump to last position on opening file
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+" select buffer (fzf){{{
+function! s:buflist()
+  redir => ls
+  silent ls
+  redir END
+  return split(ls, '\n')
+endfunction
+
+function! s:bufopen(e)
+  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
+endfunction
+
+nnoremap <silent> <Space>b :call fzf#run({
+\   'source':  reverse(<sid>buflist()),
+\   'sink':    function('<sid>bufopen'),
+\   'options': '+m',
+\   'down':    len(<sid>buflist()) + 2
+\ })<CR>
+"}}}
+
+nnoremap <silent> <Space>f :FZF<CR>
+
+" gulp task runner{{{
+function! RunGulp(command)
+    lcd %:p:h
+
+    for file in ['gulpfile.babel.js', 'gulpfile.js']
+        let gulpFile = findfile(file, ".;")
+        if gulpFile != ""
+            break
+        endif
+    endfor
+
+    if gulpFile == ""
+        echom "No gulpfile found"
+    else
+        vsplit | exec "terminal gulp " . a:command
+    endif
+endfunction
+
+command! -nargs=* -complete=file Gulp call RunGulp(<q-args>)
+nnoremap <silent> <Space>u :Gulp<CR>
+"}}}
+
+let g:neomake_javascript_eslint_maker = {
+    \ 'args': ['--no-color', '--format', 'compact'],
+    \ 'errorformat': '%f: line %l\, col %c\, %m'
+    \ }
