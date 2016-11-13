@@ -5,9 +5,8 @@ export LANG=en_US.UTF-8
 export GOPATH="$HOME/.go"
 export PATH=$PATH:$GOPATH/bin
 
-source ~/.zplug/zplug
-
-POWERLEVEL9K_MODE='awesome-patched'
+source ~/.zplug/init.zsh
+POWERLEVEL9K_MODE='awesome-fontconfig'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
 POWERLEVEl9K_RIGHT_PROMPT_ELEMENTS=(status time)
 POWERLEVEL9K_COLOR_SCHEME='light'
@@ -17,12 +16,11 @@ set -o emacs
 set editing-mode emacs
 
 [ -e "${HOME}/.zsh_aliases" ] && source "${HOME}/.zsh_aliases"
-source "$HOME/.antigen/antigen.zsh"
 
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
-zplug "bhilburn/powerlevel9k"
+zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 zplug "lesaint/lesaint-mvn"
 zplug "akoenig/gulp.plugin.zsh"
 
@@ -61,7 +59,7 @@ setopt inc_append_history
 setopt share_history
 
 export PATH="/usr/local/sbin:$PATH"
-
-
 export NVM_DIR="/home/brcolow/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
