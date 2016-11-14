@@ -10,11 +10,12 @@ if !has('nvim')
 else
     if has('mac')
         let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
-        let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
     endif
 endif
 
-set shortmess+=c
+if has('patch-7.4.314')
+    set shortmess+=c
+endif
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -52,6 +53,9 @@ set completeopt=longest,menuone
 set mouse=a
 set tabpagemax=50
 set timeoutlen=3000
+if exists('+termguicolors')
+    set termguicolors
+endif
 
 let s:vim_dir = ''
 let s:is_win = 0
@@ -148,7 +152,7 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:tagbar_sort = 0
     Plug 'majutsushi/tagbar'
     noremap <silent> <F2> :TagbarToggle<CR>
-    
+
     let g:localvimrc_sandbox = 0
     let g:localvimrc_debug = 1
     let g:localvimrc_persistent = 1
@@ -182,6 +186,7 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:syntastic_warning_symbol = '⚠'
     let g:syntastic_auto_loc_list = 1
     let g:syntastic_check_on_wq = 0
+    Plug 'mhinz/vim-grepper'
 
     Plug 'inside/vim-search-pulse'
     let g:vim_search_pulse_mode = 'pattern'
@@ -211,15 +216,6 @@ nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR
 
 filetype plugin indent on
 syntax enable
-
-if executable('pt')
-    let &grepprg = 'pt --nogroup --nocolor'
-    let g:ctrlp_user_command = ['pt --nocolor -g "\\*" %s']
-elseif executable('ag')
-    let &grepprg = 'ag --vimgrep $*'
-    let &grepformat=%f:%l:%c:%m
-    let g:ctrlp_user_command = ['ag %s -f -l --nocolor -g "" --hidden --ignore .git']
-endif
 
 " Remember last cursor position.
 if line("'\"") > 1 && line("'\"") <= line('$')
@@ -257,39 +253,13 @@ if has('nvim')
 endif
 
 nnoremap <expr><silent> \| !v:count ? "<C-W>v<C-W><Right>" : '\|'
-nnoremap <expr><silent> _  !v:count ? "<C-W>s<C-W><Down>"  : '_' 
+nnoremap <expr><silent> _  !v:count ? "<C-W>s<C-W><Down>"  : '_
 
 " Sane clipboard settings
 if has('unnamedplus')
     set clipboard^=unnamedplus
 else
     set clipboard^=unnamed
-endif
-
-" statusline{{{
-if 0 
-hi User1 ctermfg=4 guifg=#40ffff  " Identifier
-hi User5 ctermfg=10 guifg=#80a0ff " Comment
-
-function! Slash()
-    if s:is_win == 1
-        return '\'
-    else
-        return '/'
-    endif
-endfunction
-
-set statusline=
-set statusline+=%5*%{expand('%:h')}     " Relative path to file dir
-set statusline+=%{Slash()}%*
-set statusline+=%1*%t%*                 " file name
-set statusline+=%2*\ %{strlen(&ft)?&ft:'none'}
-set statusline+=\ [%{&fileformat}]
-set statusline+=\ %{&encoding}
-set statusline+=\ %{fugitive#statusline()}
-set statusline+=\ ==\ %l/%L             " cursor line/total lines
-set statusline+=\ (%c)\                 " cursor column
-"}}}
 endif
 
 " vim-plug mappings{{{
