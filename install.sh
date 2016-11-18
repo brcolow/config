@@ -43,7 +43,7 @@ else
         sudo add-apt-repository ppa:neovim-ppa/unstable
         sudo apt-add-repository ppa:git-core/ppa
         sudo apt-get update
-        sudo apt-get install git, neovim, tmux-next, xsel
+        sudo apt-get install git, neovim, tmux-next, xsel, libclang-dev
     elif [[ ! -z $PACMAN ]]; then
         sudo pacman -S 
     else

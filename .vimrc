@@ -64,7 +64,11 @@ if has('win32') || has('win64')
     let s:vim_dir = $HOME . '/vimfiles'
     let s:is_win = 1
 else
-    let s:vim_dir = $HOME . '/.vim'
+    if has('nvim')
+        let s:vim_dir = $HOME . '/.config/nvim'
+    else
+        let s:vim_dir = $HOME . '/.vim'
+    endif
 endif
 
 " backup{{{
