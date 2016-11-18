@@ -19,9 +19,39 @@ if [[ "$OSTYPE" == "cygwin" ]]; then
 else
     REHOME="{$HOME}/"
 fi
+
 echo "Running install script from \"${BASEDIR}\""
 echo "Detected platform: \"${OSTYPE}\""
 echo "Is force install? ${force}"
+
+echo "Checking if base packages have been installed..."
+
+INSTALLED=$(which tmux)
+
+if [ -z "$INSTALLED" ]; then
+    echo "Base packages already installed."
+else
+    echo "Installing base packages..."
+    YUM=$(which yum)
+    APT=$(which apt-get)
+    PACMAN=$(which pacman)
+
+    if [[ ! -z $YUM ]]; then
+        sudo yum install tmux
+    elif [[ ! -z $APT ]]; then
+        sudo add-apt-repository ppa:pi-rho/dev
+        sudo add-apt-repository ppa:neovim-ppa/unstable
+        sudo apt-add-repository ppa:git-core/ppa
+        sudo apt-get update
+        sudo apt-get install git, neovim, tmux-next, xsel
+    elif [[ ! -z $PACMAN ]]; then
+        sudo pacman -S 
+    else
+        echo "could not determine which package manager to use"
+        echo "skipping install of base packages"
+    fi
+fi
+
 echo "Checking if powerline fonts are installed…"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -63,14 +93,15 @@ if [ "$force" = true ]; then
     echo "✔ Existing links removed"
 fi
 
-# (Neo)Vim
 echo "Creating dotfile links…"
 if [ "$OSTYPE" == "cygwin" ]; then
     start link.bat
 else
+    # (Neo)Vim
     ln -sf ${BASEDIR}/.vimrc ~/.vimrc
     ln -sf ${BASEDIR}/.gvimrc ~/.gvimrc
     : ${XCH:=~/.config}
+    mkdir -p ${XCH}/nvim
     ln -sf ${BASEDIR}/.vimrc ${XCH}/nvim/init.vim
 
     # ZSH
