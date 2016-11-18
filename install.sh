@@ -43,13 +43,23 @@ else
         sudo add-apt-repository ppa:neovim-ppa/unstable
         sudo apt-add-repository ppa:git-core/ppa
         sudo apt-get update
-        sudo apt-get install git, neovim, tmux-next, xsel, libclang-dev
+        sudo apt-get install build-essential, autoconf, pkg-config, git, neovim, tmux-next, xsel, libclang-dev
     elif [[ ! -z $PACMAN ]]; then
         sudo pacman -S 
     else
         echo "could not determine which package manager to use"
         echo "skipping install of base packages"
     fi
+
+    echo set bell-style none >> ~/.inputrc
+    mkdir -p ~/dev
+    cd ~/dev
+    git clone https://github.com/universal-ctags/ctags.git --depth 1
+    cd ctags
+    ./autogen.sh
+    ./configure
+    make
+    sudo make install
 fi
 
 echo "Checking if powerline fonts are installed…"
