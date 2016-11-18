@@ -1,15 +1,19 @@
 export DISPLAY=:0
 export TERM=xterm-256color
+export EDITOR=nvim
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
-HISTCONTROL=ignoreboth
+export HISTCONTROL=ignoreboth:erasedups
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # unlimited history
-HISTSIZE=-1 HISTFILESIZE=-1
+export HISTSIZE=-1
+export HISTFILESIZE=-1
 
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-searchforward'
@@ -27,9 +31,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
-unset GREP_OPTIONS
-alias grep="/usr/bin/grep $GREP_OPTIONS"
-alias ls='ls --color'
+alias grep='grep --color=auto'
+alias ls='ls --color=auto'
+alias tmux='tmux-next'
 alias aptup='sudo apt-get update && sudo apt-get upgrade'
 alias crypt='cd /mnt/c/code/cryptodash'
 alias cent='cd /mnt/c/code/centurion'
@@ -38,9 +42,7 @@ alias glacier='/mnt/c/code/cryptodash/scripts/glacier_backup.sh'
 
 export NVM_DIR="/home/brcolow/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-export FZF_DEFAULT_COMMAND='ag --hidden -g ""'
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 
 export PATH="$PATH:/usr/sbin:/.rvm/bin:/.local/bin:$HOME/bin"
 
@@ -56,3 +58,5 @@ fi
 if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
     ssh-add
 fi
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
