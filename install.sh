@@ -68,6 +68,7 @@ else
     ./build.sh
     sudo make install
 
+    wget -O ~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
     sudo pip3 install neovim
 fi
 
