@@ -68,7 +68,9 @@ else
     ./build.sh
     sudo make install
 
-    wget -O ~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
+    wget --quiet --output-document=~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
+    wget --quiet --output-document=~/.gradle-completion.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
+
     sudo pip3 install neovim
 fi
 
