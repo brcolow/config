@@ -1,6 +1,5 @@
 [user]
     name = Michael Ennen
-    email = (none)
     useconfigonly = true
 [core]
     autocrlf = false
@@ -12,7 +11,7 @@
 [include]
     path = ~/.gitconfig.local
 [push]
-    default = simple
+	default = current
 [i18n]
     filesEncoding = utf-8
 [alias]

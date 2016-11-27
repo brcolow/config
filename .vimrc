@@ -184,6 +184,10 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:neomake_open_list = 1
     Plug 'neomake/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
     let g:neomake_javascript_enabled_makers = ['eslint']
+    let g:neomake_javascript_eslint_maker = {
+        \ 'args': ['--no-color', '--format', 'compact'],
+        \ 'errorformat': '%f: line %l\, col %c\, %m'
+        \ }
     let g:neomake_java_enabled_makers = ['javac']
     let g:neomake_sass_enabled_makers = ['sass-lint']
     let g:neomake_sql_enabled_makers = ['sqlint']
@@ -307,14 +311,17 @@ autocmd FileType gitcommit highlight ColorColumn ctermbg=241 guibg=#2b1d0e
 autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
 
 " Java{{{
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
-autocmd FileType java let b:vcm_tab_complete = 'omni'
-autocmd FileType java highlight ColorColumn ctermbg=241 guibg=#2b1d0e
-autocmd FileType java let &colorcolumn=join(range(120,999),",")
-autocmd FileType java setlocal tabstop=4 shiftwidth=4 expandtab copyindent softtabstop=0
-autocmd FileType java setlocal makeprg=mvn
-autocmd FileType java setlocal errorformat=[%tRROR]\ %f:[%l]\ %m,%-G%.%#
-nmap ,im <Plug>(JavaComplete-Imports-AddSmart)
+augroup java
+  autocmd!
+  autocmd FileType java setlocal omnifunc=javacomplete#Complete
+  autocmd FileType java let b:vcm_tab_complete = 'omni'
+  autocmd FileType java highlight ColorColumn ctermbg=241 guibg=#2b1d0e
+  autocmd FileType java let &colorcolumn=join(range(120,999),",")
+  autocmd FileType java setlocal tabstop=4 shiftwidth=4 expandtab copyindent softtabstop=0
+  autocmd FileType java setlocal makeprg=mvn
+  autocmd FileType java setlocal errorformat=[%tRROR]\ %f:[%l]\ %m,%-G%.%#
+  autocmd FileType java nmap ,im <Plug>(JavaComplete-Imports-AddSmart)
+augroup END
 let g:java_highlight_all = 1
 let g:java_highlight_debug = 1
 let g:java_highlight_functions = 1
@@ -345,29 +352,78 @@ nnoremap <silent> <Space>b :call fzf#run({
 
 nnoremap <silent> <Space>f :FZF<CR>
 
-" gulp task runner{{{
-function! RunGulp(command)
-    lcd %:p:h
+function! s:findNearestFile(files) abort
+  lcd %:p:h
 
-    for file in ['gulpfile.babel.js', 'gulpfile.js']
-        let gulpFile = findfile(file, ".;")
-        if gulpFile != ""
-            break
-        endif
-    endfor
-
-    if gulpFile == ""
-        echom "No gulpfile found"
-    else
-        vsplit | exec "terminal gulp " . a:command
+  for file in files
+    let found = findfile(file, ".;")
+    if found != ""
+      break
     endif
+  endfor
+
+  if found == ""
+    echom "could not find any file: " . str(files)
+  else
+    return found
+  endif
 endfunction
 
-command! -nargs=* -complete=file Gulp call RunGulp(<q-args>)
-nnoremap <silent> <Space>u :Gulp<CR>
-"}}}
+function! s:whatFunctionAreWeIn() abort
+  let strList = ["while",  "for", "if", "elseif", "else", "try", "catch", "finally", "case", "switch"]
+  let foundcontrol = 1
+  let position = ""
+  let pos=getpos(".")
+  let view=winsaveview()
+  let funcName = ""
+  while (foundcontrol)
+    let foundcontrol = 0
+    normal [{
+    call search('\S','bW')
+    let tempchar = getline(".")[col(".") - 1]
+    if (match(tempchar, ")") >=0 )
+      normal %
+      call search('\S','bW')
+    endif
+    let tempstring = getline(".")
+    let funcLineSplit = split(tempstring)
+    for item in funcLineSplit
+      if (stridx(item, "()") != -1)
+        let funcName = item
+        break
+      endif
+    endfor
+    for item in strList
+      if (match(tempstring,item) >= 0)
+        let position = item . " - " . position
+        let foundcontrol = 1
+        break
+      endif
+    endfor
+    if (foundcontrol == 0)
+      call cursor(pos)
+      call winrestview(view)
+    endif
+  endwhile
+  call cursor(pos)
+  call winrestview(view)
+  return funcName[0:stridx(funcName, '()') - 1]
+endfunction
 
-let g:neomake_javascript_eslint_maker = {
-    \ 'args': ['--no-color', '--format', 'compact'],
-    \ 'errorformat': '%f: line %l\, col %c\, %m'
-    \ }
+function! s:getClassName() abort
+  return expand('%:r')[strridx(expand('%:r'), '/') + 1:]
+endfunction
+
+function! s:openTerm(file, args) abort
+  let cwd = getcwd()
+  execute 'lcd ' . s:findNearestFile(file)
+  execute 'vsplit | terminal ' . args
+endfunction
+
+command! -nargs=* -complete=file JUnitA call s:openTerm(['pom.xml'], 'mvn -Dtest=' . s:getClassName() . ' test ') . <args>)
+nnoremap <silent> <Space>ta :JUnitA<cr>
+command! -nargs=* -complete=file JUnitS call s:openTerm(['pom.xml'], 'mvn -Dtest=' . s:getClassName() . '#' . s:whatFunctionAreWeIn() . ' test ') . <args>)
+nnoremap <silent> <Space>ts :JUnitS<cr>
+
+command! -nargs=* -complete=file Gulp call s:openTerm(['gulpfile.babel.js', 'gulpfile.js'], 'gulp' . <args>)
+nnoremap <silent> <Space>u :Gulp<cr>
