@@ -24,14 +24,14 @@ echo "Running install script from \"${BASEDIR}\""
 echo "Detected platform: \"${OSTYPE}\""
 echo "Is force install? ${force}"
 
-echo "Checking if base packages have been installed..."
+echo "Checking if base packages have been installed…"
 
 INSTALLED=$(which tmux)
 
 if [ -z "$INSTALLED" ]; then
     echo "Base packages already installed."
 else
-    echo "Installing base packages..."
+    echo "Installing base packages…"
     YUM=$(which yum)
     APT=$(which apt-get)
     PACMAN=$(which pacman)
@@ -42,18 +42,19 @@ else
         sudo add-apt-repository ppa:pi-rho/dev
         sudo add-apt-repository ppa:neovim-ppa/unstable
         sudo apt-add-repository ppa:git-core/ppa
+        sudo apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
+        sudo bash -c "echo 'deb https://weechat.org/ubuntu trusty main' >/etc/apt/sources.list.d/weechat.list"
         sudo apt-get update
-        sudo apt-get install build-essential, autoconf, pkg-config, libpcre3-dev zlib1g-dev liblzma-dev, cmake, git, neovim, tmux-next, xsel, libclang-dev, python3-pip, zbar-tools
+        sudo apt-get install build-essential, autoconf, pkg-config, libpcre3-dev zlib1g-dev liblzma-dev, cmake, git, neovim, tmux-next, xsel, libclang-dev, python3-pip, zbar-tools, weechat-devel-curses, weechat-devel-plugins
     elif [[ ! -z $PACMAN ]]; then
-        sudo pacman -S 
+        sudo pacman -S
     else
-        echo "could not determine which package manager to use"
-        echo "skipping install of base packages"
+        echo "✘ Could not determine which package manager to use - skipping install of base packages."
     fi
     echo set bell-style none >> ~/.inputrc
     mkdir -p ~/dev
     cd ~/dev
-    echo "Building and installing universal-ctags"
+    echo "Building and installing universal-ctags…"
     git clone https://github.com/universal-ctags/ctags.git --depth 1
     cd ctags
     ./autogen.sh
@@ -62,7 +63,7 @@ else
     sudo make install
 
     cd ~/dev
-    echo "Building and installing silver searcher"
+    echo "Building and installing silver searcher…"
     git clone https://github.com/ggreer/the_silver_searcher.git --depth 1
     cd the_silver_searcher/
     ./build.sh
@@ -85,7 +86,7 @@ elif [[ "$OSTYPE" == "cygwin" ]]; then
 fi
 
 if [ -z "$FONTS_INSTALLED" ]; then
-    echo "✘ Powerline fonts not installed. Installing…"
+    echo "✘ Powerline fonts not installed - installing…"
     if [[ "$OSTYPE" == "cygwin" ]]; then
         powershell -executionPolicy bypass -noexit -file "InstallFonts.ps1"
     else
@@ -94,7 +95,7 @@ if [ -z "$FONTS_INSTALLED" ]; then
         git clone https://github.com/gabrielelana/awesome-terminal-fonts
         ./awesome-terminal-fonts/install.sh
     fi
-    echo "✔ Powerline fonts installed!"
+    echo "✔ Powerline fonts installed"
 else
     echo "✔ Powerline fonts already installed"
 fi
