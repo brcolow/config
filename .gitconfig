@@ -11,7 +11,7 @@
 [include]
     path = ~/.gitconfig.local
 [push]
-	default = current
+    default = current
 [i18n]
     filesEncoding = utf-8
 [alias]
