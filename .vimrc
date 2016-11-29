@@ -108,7 +108,7 @@ if has("persistent_undo")
 endif
 "}}}
 
-function! s:cycleNumbering() abort
+function! CycleNumbering() abort
   " (off number relativenumber)
   if &number && !&relativenumber
     setlocal relativenumber
@@ -120,7 +120,7 @@ function! s:cycleNumbering() abort
   endif
 endfunction
 
-nnoremap <silent> <Space>n :call <SID>s:cycleNumbering()<CR>
+nnoremap <silent> <Space>n :call CycleNumbering()<CR>
 
 if empty(glob(s:vim_dir . '/autoload/plug.vim'))
   execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
@@ -162,8 +162,8 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:localvimrc_persistent = 1
     let g:localvimrc_name = [".lvimrc", "contrib/.lvimrc"]
     " Plug 'embear/vim-localvimrc'
-    let g:JavaComplete_UsePython3 = 1
-    Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
+    " let g:JavaComplete_UsePython3 = 1
+    " Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
     " Better java.vim syntax highlighting
     Plug 'rudes/vim-java', { 'for' : 'java' }
@@ -351,7 +351,7 @@ nnoremap <silent> <Space>b :call fzf#run({
 
 nnoremap <silent> <Space>f :FZF<CR>
 
-function! s:findNearestFile(files)
+function! s:findNearestFile(files) abort
   lcd %:p:h
   let l:files = a:files
   if (type(l:files) != type([]))
@@ -374,6 +374,8 @@ function! s:findNearestFile(files)
   endif
 endfunction
 
+" Determine, based on cursor position, what function/method the cursor
+" is currently inside of. Designed to work for Java-like languages.
 function! s:whatFunctionAreWeIn() abort
   let strList = ["while",  "for", "if", "elseif", "else", "try", "catch", "finally", "case", "switch"]
   let foundcontrol = 1
@@ -415,19 +417,26 @@ function! s:whatFunctionAreWeIn() abort
   return funcName[0:stridx(funcName, '()') - 1]
 endfunction
 
+" Get the (Java-like) class name of the currently opened file.
 function! s:getClassName() abort
   return expand('%:r')[strridx(expand('%:r'), '/') + 1:]
 endfunction
 
+" Open a :terminal with the current working directory set to the nearest
+" directory (searching upwards from the current directory) containing
+" a:file and execute the given command in a:args.
 function! s:openTerm(file, args) abort
   let cwd = getcwd()
-  execute 'lcd ' . s:findNearestFile(a:file)
+  echom s:findNearestFile(a:file)
+  echom a:args
+  execute 'lcd ' . fnamemodify(s:findNearestFile(a:file), ':p:h')
   execute 'vsplit | terminal ' . a:args
+  execute 'lcd ' . cwd
 endfunction
 
-command! -nargs=* -complete=file JUnitA call s:openTerm(['pom.xml'], 'mvn -Dtest=' . s:getClassName() . ' test ') . <args>)
+command! -nargs=* -complete=file JUnitA call s:openTerm('pom.xml', 'mvn -Dtest=' . s:getClassName() . ' test ') . <args>)
 nnoremap <silent> <Space>ta :JUnitA<cr>
-command! -nargs=* -complete=file JUnitS call s:openTerm(['pom.xml'], 'mvn -Dtest=' . s:getClassName() . '#' . s:whatFunctionAreWeIn() . ' test ') . <args>)
+command! -nargs=* -complete=file JUnitS call s:openTerm('pom.xml', 'mvn -Dtest=' . s:getClassName() . '#' . s:whatFunctionAreWeIn() . ' test ') . <args>)
 nnoremap <silent> <Space>ts :JUnitS<cr>
 
 command! -nargs=* -complete=file Gulp call s:openTerm(['gulpfile.babel.js', 'gulpfile.js'], 'gulp' . <args>)
