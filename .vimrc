@@ -1,14 +1,14 @@
-" vim: foldmethod=marker
+" vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2 foldmethod=marker
 if !has('nvim') && has('vim_starting')
-    set encoding=utf-8
+  set encoding=utf-8
 endif
 
 if !has('nvim')
-    set ttyfast
+  set ttyfast
 else
-    let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
-    set termguicolors
-    let g:python3_host_prog = '/usr/bin/python3'
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+  set termguicolors
+  let g:python3_host_prog = '/usr/bin/python3'
 endif
 
 set shortmess+=c
@@ -54,21 +54,21 @@ set tabpagemax=50
 set timeoutlen=3000
 set visualbell t_vb=
 if has('nvim-0.2.0')
-    set inccommand=split
+  set inccommand=split
 endif
 
 
 let s:vim_dir = ''
 let s:is_win = 0
 if has('win32') || has('win64')
-    let s:vim_dir = $HOME . '/vimfiles'
-    let s:is_win = 1
+  let s:vim_dir = $HOME . '/vimfiles'
+  let s:is_win = 1
 else
-    if has('nvim')
-        let s:vim_dir = $HOME . '/.config/nvim'
-    else
-        let s:vim_dir = $HOME . '/.vim'
-    endif
+  if has('nvim')
+    let s:vim_dir = $HOME . '/.config/nvim'
+  else
+    let s:vim_dir = $HOME . '/.vim'
+  endif
 endif
 
 " backup{{{
@@ -108,27 +108,27 @@ if has("persistent_undo")
 endif
 "}}}
 
-function! s:CycleNumbering()
-    " (off number relativenumber)
-    if &number && !&relativenumber
-        setlocal relativenumber
-    elseif &relativenumber
-        setlocal norelativenumber
-        setlocal nonumber
-    else
-        setlocal number
-    endif
+function! s:cycleNumbering() abort
+  " (off number relativenumber)
+  if &number && !&relativenumber
+    setlocal relativenumber
+  elseif &relativenumber
+    setlocal norelativenumber
+    setlocal nonumber
+  else
+    setlocal number
+  endif
 endfunction
 
-nnoremap <silent> <Space>n :call <SID>CycleNumbering()<CR>
+nnoremap <silent> <Space>n :call <SID>s:cycleNumbering()<CR>
 
 if empty(glob(s:vim_dir . '/autoload/plug.vim'))
-execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
+  execute 'silent !curl -fLo ' . shellescape(s:vim_dir . '/autoload/plug.vim') . ' --create-dirs '
     \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
-function! Cond(cond, ...)
+function! Cond(cond, ...) abort
     let opts = get(a:000, 0, {})
     return a:cond ? opts : extend(opts, { 'on': [] })
 endfunction
@@ -185,8 +185,7 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'neomake/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
     let g:neomake_javascript_enabled_makers = ['eslint']
     let g:neomake_javascript_eslint_maker = {
-        \ 'args': ['--no-color', '--format', 'compact'],
-        \ 'errorformat': '%f: line %l\, col %c\, %m'
+        \ 'args': ['--no-color', '--format', 'compact']
         \ }
     let g:neomake_java_enabled_makers = ['javac']
     let g:neomake_sass_enabled_makers = ['sass-lint']
@@ -223,10 +222,10 @@ syntax enable
 
 " Remember last cursor position.
 if line("'\"") > 1 && line("'\"") <= line('$')
-    " Unless it's a commit message.
-    if &filetype !=# 'gitcommit'
-        exe "normal! g'\""
-    endif
+  " Unless it's a commit message.
+  if &filetype !=# 'gitcommit'
+    exe "normal! g'\""
+  endif
 endif
 
 " Never insert <CR> if there are completions
@@ -249,11 +248,11 @@ nmap <silent> <A-Down> :wincmd j<CR>
 nmap <silent> <A-Left> :wincmd h<CR>
 nmap <silent> <A-Right> :wincmd l<CR>
 if has('nvim')
-    tnoremap <esc> <c-\><c-n>
-    tnoremap <A-Left> <C-\><C-n><C-w>h
-    tnoremap <A-Down> <C-\><C-n><C-w>j
-    tnoremap <A-Up> <C-\><C-n><C-w>k
-    tnoremap <A-Right> <C-\><C-n><C-w>l
+  tnoremap <esc> <c-\><c-n>
+  tnoremap <A-Left> <C-\><C-n><C-w>h
+  tnoremap <A-Down> <C-\><C-n><C-w>j
+  tnoremap <A-Up> <C-\><C-n><C-w>k
+  tnoremap <A-Right> <C-\><C-n><C-w>l
 endif
 
 nnoremap <expr><silent> \| !v:count ? "<C-W>v<C-W><Right>" : '\|'
@@ -261,9 +260,9 @@ nnoremap <expr><silent> _  !v:count ? "<C-W>s<C-W><Down>"  : '_'
 
 " Sane clipboard settings
 if has('unnamedplus')
-    set clipboard^=unnamedplus
+  set clipboard^=unnamedplus
 else
-    set clipboard^=unnamed
+  set clipboard^=unnamed
 endif
 
 " statusline{{{
@@ -331,14 +330,14 @@ au BufRead,BufNewFile *.fxml set filetype=xml
 "}}}
 
 " select buffer (fzf){{{
-function! s:buflist()
+function! s:buflist() abort
   redir => ls
   silent ls
   redir END
   return split(ls, '\n')
 endfunction
 
-function! s:bufopen(e)
+function! s:bufopen(e) abort
   execute 'buffer' matchstr(a:e, '^[ 0-9]*')
 endfunction
 
@@ -352,20 +351,26 @@ nnoremap <silent> <Space>b :call fzf#run({
 
 nnoremap <silent> <Space>f :FZF<CR>
 
-function! s:findNearestFile(files) abort
+function! s:findNearestFile(files)
   lcd %:p:h
+  let l:files = a:files
+  if (type(l:files) != type([]))
+    let l:files = [a:files]
+  endif
 
-  for file in files
-    let found = findfile(file, ".;")
-    if found != ""
+  let l:found = ""
+  for file in l:files
+    let l:found = findfile(file, ".;")
+    if l:found != ""
       break
     endif
   endfor
 
-  if found == ""
-    echom "could not find any file: " . str(files)
+  if l:found == ""
+    echom "could not find any file: " . string(l:files)
+    return v:null
   else
-    return found
+    return l:found
   endif
 endfunction
 
@@ -416,8 +421,8 @@ endfunction
 
 function! s:openTerm(file, args) abort
   let cwd = getcwd()
-  execute 'lcd ' . s:findNearestFile(file)
-  execute 'vsplit | terminal ' . args
+  execute 'lcd ' . s:findNearestFile(a:file)
+  execute 'vsplit | terminal ' . a:args
 endfunction
 
 command! -nargs=* -complete=file JUnitA call s:openTerm(['pom.xml'], 'mvn -Dtest=' . s:getClassName() . ' test ') . <args>)
@@ -427,3 +432,11 @@ nnoremap <silent> <Space>ts :JUnitS<cr>
 
 command! -nargs=* -complete=file Gulp call s:openTerm(['gulpfile.babel.js', 'gulpfile.js'], 'gulp' . <args>)
 nnoremap <silent> <Space>u :Gulp<cr>
+
+let gitDir = system('git rev-parse --show-toplevel')
+if !v:shell_error
+  if (globpath(gitDir, 'package.json'))
+    let g:neomake_javascript_eslint_exe = gitDir .'/node_modules/.bin/eslint'
+  endif
+endif
+
