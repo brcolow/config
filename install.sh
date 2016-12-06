@@ -45,7 +45,7 @@ else
         sudo apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
         sudo bash -c "echo 'deb https://weechat.org/ubuntu trusty main' >/etc/apt/sources.list.d/weechat.list"
         sudo apt-get update
-        sudo apt-get install build-essential, autoconf, pkg-config, libpcre3-dev zlib1g-dev liblzma-dev, cmake, git, neovim, tmux-next, xsel, libclang-dev, python3-pip, zbar-tools, weechat-devel-curses, weechat-devel-plugins
+        sudo apt-get install build-essential, autoconf, pkg-config, python-pip, jq, libpcre3-dev zlib1g-dev liblzma-dev, cmake, git, neovim, tmux-next, xsel, libclang-dev, python3-pip, zbar-tools, weechat-devel-curses, weechat-devel-plugins
     elif [[ ! -z $PACMAN ]]; then
         sudo pacman -S
     else
@@ -72,6 +72,7 @@ else
     wget --quiet --output-document=~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
     wget --quiet --output-document=~/.gradle-completion.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
 
+    sudo pip install awscli
     sudo pip3 install neovim
 fi
 
