@@ -59,5 +59,5 @@ if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
     ssh-add
 fi
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash]
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 [ -f ~/.gradle-completion.bash] && source ~/.gradle-completion.bash
