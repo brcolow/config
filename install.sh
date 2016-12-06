@@ -69,6 +69,14 @@ else
     ./build.sh
     sudo make install
 
+    cd ~/dev
+    echo "Building and install pigz (parallel gzip)…"
+    wget http://zlib.net/pigz/pigz-2.3.4.tar.gz
+    tar xvf pigz-2.3.4.tar.gz
+    cd pigz-2.3.4
+    make
+    sudo ln -s -f ~/dev/pigz /usr/local/bin
+
     wget --quiet --output-document=~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
     wget --quiet --output-document=~/.gradle-completion.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
 
