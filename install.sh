@@ -82,6 +82,7 @@ else
 
     sudo pip install awscli
     sudo pip3 install neovim
+    sudo pip3 install neovim-remote
 fi
 
 echo "Checking if powerline fonts are installed…"

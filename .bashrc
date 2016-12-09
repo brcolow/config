@@ -1,6 +1,6 @@
 export DISPLAY=:0
 export TERM=xterm-256color
-export EDITOR=nvim
+export EDITOR="nvr --remote-wait"
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 

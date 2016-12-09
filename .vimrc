@@ -166,8 +166,9 @@ call plug#begin(s:vim_dir . '/bundle')
     " Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 
     " Better java.vim syntax highlighting
-    Plug 'rudes/vim-java', { 'for' : 'java' }
+    Plug 'rudes/vim-java', { 'for': 'java' }
     Plug 'NLKNguyen/vim-maven-syntax', { 'for': 'xml.maven' }
+    Plug 'keith/swift.vim', { 'for': 'swift' }
 
     let g:deoplete#enable_at_startup = 1
     let g:deoplete#auto_complete_start_length = 1
