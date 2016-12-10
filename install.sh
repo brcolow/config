@@ -44,9 +44,9 @@ else
         sudo add-apt-repository ppa:neovim-ppa/unstable
         sudo apt-add-repository ppa:git-core/ppa
         sudo apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
-        sudo bash -c "echo 'deb https://weechat.org/ubuntu trusty main' >/etc/apt/sources.list.d/weechat.list"
+        sudo bash -c "echo 'deb https://weechat.org/ubuntu xenial main' >/etc/apt/sources.list.d/weechat.list"
         sudo apt-get update
-        sudo apt-get install build-essential, autoconf, pkg-config, python-pip, jq, libpcre3-dev, cabal-install, zlib1g-dev liblzma-dev, cmake, git, neovim, tmux-next, xsel, libclang-dev, python3-pip, zbar-tools, weechat-devel-curses, weechat-devel-plugins
+        sudo apt-get install build-essential autoconf pkg-config python-pip jq libpcre3-dev cabal-install zlib1g-dev liblzma-dev cmake git neovim tmux-next xsel libclang-dev python3-pip zbar-tools weechat-devel-curses weechat-devel-plugins
     elif [[ ! -z $PACMAN ]]; then
         sudo pacman -S
     else
