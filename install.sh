@@ -88,13 +88,18 @@ else
         cabal install
         sudo ln -s -f ~/.cabal/shellcheck /usr/local/bin
     fi
-
+    mkdir ~/.config/completion
     wget --quiet --output-document=~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
-    wget --quiet --output-document=~/.gradle-completion.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
+    wget --quiet --output-document=~/.config/completion/gradle.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
 
     sudo pip install awscli
     sudo pip3 install neovim
     sudo pip3 install neovim-remote
+
+    sudo gem update --system
+    sudo gem install tmuxinator
+    wget --quiet --output-document=~/.config/completion/tmuxinator.bash https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.bash
+    wget --quiet --output-document=~/.config/completion/mvn.bash https://raw.githubusercontent.com/juven/maven-bash-completion/master/bash_completion.bash
 fi
 
 echo "Checking if powerline fonts are installed…"

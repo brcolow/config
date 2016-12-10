@@ -60,4 +60,8 @@ if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
 fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-[ -f ~/.gradle-completion.bash ] && source ~/.gradle-completion.bash
+
+[ -f ~/.config/completion/mvn.bash ] && source ~/.config/completion/mvn.bash
+[ -f ~/.config/completion/gradle.bash ] && source ~/.config/completion/gradle.bash
+[ -f ~/.config/completion/tmuxinator.bash ] && source ~/.config/completion/tmuxinator.bash
+
