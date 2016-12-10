@@ -192,6 +192,7 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:neomake_sass_enabled_makers = ['sass-lint']
     let g:neomake_sql_enabled_makers = ['sqlint']
     let g:neomake_sh_enabled_makers = ['shellcheck']
+    let g:neomake_ansible_enabled_makers = ['ansiblelint']
 
     Plug 'othree/yajs.vim', { 'for': 'javascript' }
     Plug 'inside/vim-search-pulse'
@@ -306,9 +307,12 @@ nnoremap <silent> ,pn :<C-u>PlugUpgrade<CR>
 au! WinEnter * set nowrap
 
 set spelllang=en_us
-autocmd FileType gitcommit setlocal spell textwidth=72
-autocmd FileType gitcommit highlight ColorColumn ctermbg=241 guibg=#2b1d0e
-autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
+augroup gitcommit
+  autocmd!
+  autocmd FileType gitcommit setlocal spell textwidth=72
+  autocmd FileType gitcommit highlight ColorColumn ctermbg=241 guibg=#2b1d0e
+  autocmd FileType gitcommit let &colorcolumn=join(range(72,999),",")
+augroup END
 
 " Java{{{
 augroup java

@@ -20,6 +20,7 @@ else
     REHOME="{$HOME}/"
 fi
 
+KERNEL=$(cat /proc/sys/kernel/osrelease 2>/dev/null)
 echo "Running install script from \"${BASEDIR}\""
 echo "Detected platform: \"${OSTYPE}\""
 echo "Is force install? ${force}"
@@ -45,7 +46,7 @@ else
         sudo apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
         sudo bash -c "echo 'deb https://weechat.org/ubuntu trusty main' >/etc/apt/sources.list.d/weechat.list"
         sudo apt-get update
-        sudo apt-get install build-essential, autoconf, pkg-config, python-pip, jq, libpcre3-dev zlib1g-dev liblzma-dev, cmake, git, neovim, tmux-next, xsel, libclang-dev, python3-pip, zbar-tools, weechat-devel-curses, weechat-devel-plugins
+        sudo apt-get install build-essential, autoconf, pkg-config, python-pip, jq, libpcre3-dev, cabal-install, zlib1g-dev liblzma-dev, cmake, git, neovim, tmux-next, xsel, libclang-dev, python3-pip, zbar-tools, weechat-devel-curses, weechat-devel-plugins
     elif [[ ! -z $PACMAN ]]; then
         sudo pacman -S
     else
@@ -70,12 +71,23 @@ else
     sudo make install
 
     cd ~/dev
-    echo "Building and install pigz (parallel gzip)…"
+    echo "Building and installing pigz (parallel gzip)…"
     wget http://zlib.net/pigz/pigz-2.3.4.tar.gz
     tar xvf pigz-2.3.4.tar.gz
     cd pigz-2.3.4
     make
     sudo ln -s -f ~/dev/pigz /usr/local/bin
+
+
+    # ghc needs timer_create
+    if [[ ! "$KERNEL" =~ "Microsoft" ]]; then
+        cd ~/dev
+        echo "Building and installing shellcheck…"
+        git clone https://github.com/koalaman/shellcheck.git
+        cd shellcheck
+        cabal install
+        sudo ln -s -f ~/.cabal/shellcheck /usr/local/bin
+    fi
 
     wget --quiet --output-document=~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
     wget --quiet --output-document=~/.gradle-completion.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
