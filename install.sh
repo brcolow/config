@@ -83,7 +83,7 @@ else
     if [[ ! "$KERNEL" =~ "Microsoft" ]]; then
         cd ~/dev
         echo "Building and installing shellcheck…"
-        git clone https://github.com/koalaman/shellcheck.git
+        git clone https://github.com/koalaman/shellcheck.git --depth 1
         cd shellcheck
         cabal install
         sudo ln -s -f ~/.cabal/shellcheck /usr/local/bin
