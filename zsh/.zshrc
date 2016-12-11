@@ -44,7 +44,6 @@ zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
-zle -N zle-line-init
 setopt no_beep
 setopt hist_ignore_dups
 setopt hist_reduce_blanks
