@@ -44,7 +44,7 @@ export NVM_DIR="/home/brcolow/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 
-export PATH="$PATH:/usr/sbin:/.rvm/bin:/.local/bin:$HOME/bin"
+export PATH="/usr/local/bin:/usr/bin:$HOME/bin:/usr/sbin:/sbin:/.local/bin:/bin"
 
 # ssh-agent configuration
 if [ -z "$(pgrep ssh-agent)" ]; then
