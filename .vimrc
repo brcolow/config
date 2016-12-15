@@ -182,7 +182,7 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:deoplete#sources = {}
     let g:deoplete#sources.javascript = ['ternjs']
 
-    let g:neomake_open_list = 1
+    let g:neomake_open_list = 2
     Plug 'neomake/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
     let g:neomake_javascript_enabled_makers = ['eslint']
     let g:neomake_javascript_eslint_maker = {
@@ -447,10 +447,11 @@ nnoremap <silent> <Space>ts :JUnitS<cr>
 command! -nargs=* -complete=file Gulp call s:openTerm(['gulpfile.babel.js', 'gulpfile.js'], 'gulp' . <args>)
 nnoremap <silent> <Space>u :Gulp<cr>
 
-let gitDir = system('git rev-parse --show-toplevel')
+let s:gitDir = system('git rev-parse --show-toplevel')
 if !v:shell_error
-  if (globpath(gitDir, 'package.json'))
-    let g:neomake_javascript_eslint_exe = gitDir .'/node_modules/.bin/eslint'
+  let s:gitDirString = split(s:gitDir)[0]
+  if !empty(glob(s:gitDirString . '/package.json'))
+    let g:neomake_javascript_eslint_exe = s:gitDirString .'/node_modules/.bin/eslint'
   endif
 endif
 
