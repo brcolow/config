@@ -174,9 +174,10 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:deoplete#auto_complete_start_length = 1
     Plug 'Shougo/deoplete.nvim', Cond(has('nvim'))
 
-    let g:deoplete#sources#clang#libclang_path = "/usr/lib/llvm-3.4/lib/libclang.so"
-    let g:deoplete#sources#clang#clang_header = "/usr/include/clang/3.4/include"
-    Plug 'zchee/deoplete-clang', Cond(has('nvim'), { 'for': ['c', 'cpp'] })
+    " let g:deoplete#sources#clang#libclang_path = "/usr/lib/llvm-3.4/lib/libclang.so"
+    " let g:deoplete#sources#clang#clang_header = "/usr/include/clang/3.4/include"
+    " Plug 'zchee/deoplete-clang', Cond(has('nvim'), { 'for': ['c', 'cpp'] })
+    Plug 'tweekmonster/deoplete-clang2', Cond(has('nvim'), { 'for': ['c', 'cpp', 'objc', 'objcpp'] })
     Plug 'zchee/deoplete-jedi', Cond(has('nvim'), { 'for': 'python' })
     Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), { 'for': ['javascript', 'javascript.jsx'] })
     let g:deoplete#sources = {}
