@@ -6,6 +6,7 @@
     excludesfile = ~/.gitexcludes
     editor = nvim
     filemode = false
+	pager = diff-so-fancy | less --tabs=4 -RFX
 [diff]
     compactionHeuristic = true
 [include]
@@ -19,23 +20,23 @@
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
     fixup = "!sh -c '(git diff-files --quiet || (echo Unstaged changes, please commit or stash with --keep-index; exit 1)) && COMMIT=$(git rev-parse $1) && git commit --fixup=$COMMIT && git rebase -i --autosquash $COMMIT~1' -"
 [color]
-    ui = always
-[color "diff"]
-    meta = yellow bold
-    commit = green bold
-    frag = magenta bold
-    old = red bold
-    new = green bold
-    whitespace = red reverse
-[color "diff-highlight"]
-    oldNormal = red bold
-    oldHighlight = "red bold 52"
-    newNormal = "green bold"
-    newHighlight = "green bold 22"
-[color "branch"]
-    current = bold white green
-    local = bold yellow
-    remote = bold magenta
+    ; ui = always
+; [color "diff"]
+    ; meta = yellow bold
+    ; commit = green bold
+    ; frag = magenta bold
+    ; old = red bold
+    ; new = green bold
+    ; whitespace = red reverse
+; [color "diff-highlight"]
+    ; oldNormal = red bold
+    ; oldHighlight = "red bold 52"
+	; newNormal = "green bold"
+	; newHighlight = "green bold 22"
+; [color "branch"]
+    ; current = bold white green
+    ; local = bold yellow
+    ; remote = bold magenta
 [rerere]
     enabled = true
 [github]

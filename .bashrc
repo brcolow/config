@@ -45,6 +45,7 @@ export NVM_DIR="/home/brcolow/.nvm"
 export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 
 export PATH="/usr/local/bin:/usr/bin:$HOME/bin:/usr/sbin:/sbin:/.local/bin:/bin"
+export PATH="$HOME/.cabal/bin:$PATH"
 
 # ssh-agent configuration
 if [ -z "$(pgrep ssh-agent)" ]; then

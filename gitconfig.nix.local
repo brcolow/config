@@ -1,0 +1,4 @@
+[user]
+  signingkey = 178D347264D8EF83
+[credential]
+  helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret

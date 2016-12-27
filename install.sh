@@ -47,7 +47,7 @@ else
         sudo apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
         sudo bash -c "echo 'deb https://weechat.org/ubuntu xenial main' >/etc/apt/sources.list.d/weechat.list"
         sudo apt-get update
-        sudo apt-get install build-essential libtool libtool-bin ninja-build autoconf pkg-config php7.1 python-pip jq libpcre3-dev cabal-install zlib1g-dev liblzma-dev cmake git neovim tmux-next xsel clang libclang-dev python3-pip zbar-tools weechat-devel-curses weechat-devel-plugins
+        sudo apt-get install build-essential libtool libtool-bin ninja-build autoconf pkg-config php7.1 python-pip jq libsecret-1-0 libsecret-1-dev libpcre3-dev cabal-install zlib1g-dev liblzma-dev cmake git neovim tmux-next xsel clang libclang-dev python3-pip zbar-tools weechat-devel-curses weechat-devel-plugins
     elif [[ ! -z $PACMAN ]]; then
         sudo pacman -S
     else
@@ -79,6 +79,9 @@ else
     make
     sudo ln -s -f ~/dev/pigz /usr/local/bin
 
+    echo "Building libsecret for git-credential store…"
+    cd /usr/share/doc/git/contrib/credential/libsecret
+    sudo make
 
     # ghc needs timer_create
     if [[ ! "$KERNEL" =~ "Microsoft" ]]; then
