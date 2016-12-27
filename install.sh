@@ -83,15 +83,18 @@ else
     cd /usr/share/doc/git/contrib/credential/libsecret
     sudo make
 
-    # ghc needs timer_create
-    if [[ ! "$KERNEL" =~ "Microsoft" ]]; then
-        cd ~/dev
-        echo "Building and installing shellcheck…"
-        git clone https://github.com/koalaman/shellcheck.git --depth 1
-        cd shellcheck
-        cabal install
-        sudo ln -s -f ~/.cabal/shellcheck /usr/local/bin
+    if [[ "$KERNEL" =~ "Microsoft" ]]; then
+        sudo apt-get install dbus-x11
+        sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /etc/dbus-1/session.conf
     fi
+
+    cd ~/dev
+    echo "Building and installing shellcheck…"
+    git clone https://github.com/koalaman/shellcheck.git --depth 1
+    cd shellcheck
+    cabal install
+    sudo ln -s -f ~/.cabal/shellcheck /usr/local/bin
+
     mkdir ~/.config/completion
     wget --quiet --output-document=~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
     wget --quiet --output-document=~/.config/completion/gradle.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
