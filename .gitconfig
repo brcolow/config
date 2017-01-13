@@ -41,3 +41,5 @@
     enabled = true
 [github]
     user = brcolow
+[rebase]
+	autosquash = true

@@ -182,6 +182,12 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'carlitux/deoplete-ternjs', Cond(has('nvim'), { 'for': ['javascript', 'javascript.jsx'] })
     let g:deoplete#sources = {}
     let g:deoplete#sources.javascript = ['ternjs']
+    Plug 'scrooloose/syntastic', Cond(!has('nvim'))
+    let g:syntastic_always_populate_loc_list = 0
+    let g:syntastic_auto_loc_list = 0
+    let g:syntastic_check_on_open = 0
+    let g:syntastic_check_on_wq = 0
+    let g:syntastic_vim_checkers = ['vint']
 
     let g:neomake_open_list = 2
     Plug 'neomake/neomake', Cond(has('nvim'), { 'on': 'Neomake' })
@@ -194,6 +200,7 @@ call plug#begin(s:vim_dir . '/bundle')
     let g:neomake_sql_enabled_makers = ['sqlint']
     let g:neomake_sh_enabled_makers = ['shellcheck']
     let g:neomake_ansible_enabled_makers = ['ansiblelint']
+    let g:neomake_vim_enabled_makers = ['vint']
 
     Plug 'othree/yajs.vim', { 'for': 'javascript' }
     Plug 'inside/vim-search-pulse'
