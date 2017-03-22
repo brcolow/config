@@ -66,3 +66,19 @@ fi
 [ -f ~/.config/completion/gradle.bash ] && source ~/.config/completion/gradle.bash
 [ -f ~/.config/completion/tmuxinator.bash ] && source ~/.config/completion/tmuxinator.bash
 
+KERNEL=$(cat /proc/sys/kernel/osrelease 2>/dev/null)
+if [[ "$KERNEL" =~ "Microsoft" ]]; then
+  ssh-add -l &>/dev/null
+  if [ "$?" == 2 ]; then
+    test -r ~/.gnome-keyring && \
+      source ~/.gnome-keyring && \
+      export DBUS_SESSION_BUS_ADDRESS GNOME_KEYRING_CONTROL SSH_AUTH_SOCK GPG_AGENT_INFO GNOME_KEYRING_PID
+
+    ssh-add -l &>/dev/null
+    if [ "$?" == 2 ]; then
+      (umask 066; echo `dbus-launch --sh-syntax` > ~/.gnome-keyring; gnome-keyring-daemon >> ~/.gnome-keyring)
+      source ~/.gnome-keyring && \
+      export DBUS_SESSION_BUS_ADDRESS GNOME_KEYRING_CONTROL SSH_AUTH_SOCK GPG_AGENT_INFO GNOME_KEYRING_PID
+    fi
+  fi
+fi
