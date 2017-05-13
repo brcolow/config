@@ -3,6 +3,7 @@ export TERM=xterm-256color
 export EDITOR="nvr --remote-wait"
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+KERNEL=$(cat /proc/sys/kernel/osrelease 2>/dev/null)
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -36,9 +37,34 @@ alias ls='ls --color=auto'
 alias tmux='tmux-next'
 alias aptup='sudo apt-get update && sudo apt-get upgrade'
 
-function proj_crypt() {
-  cd /mnt/c/code/cryptodash
+function return_error() {
+  if [ "$2" ]; then
+    echo "$2" # print error message
+  fi
+  if [ "$1" ]; then
+    return "$1"
+  else
+    return 1
+  fi
 }
+
+function win32_process_running() {
+  if [ "$1" ]; then
+    /mnt/c/Windows/System32/tasklist.exe /FI "IMAGENAME eq "$1"" /NH 2>NUL | grep "$1"
+  else
+    return_error 1 "Missing win32 process name argument"
+  fi
+}
+
+function proj_crypt() {
+  if [[ "$KERNEL" =~ "Microsoft" ]]; then
+    if ! win32_process_running idea.exe; then
+      /mnt/c/Program\ Files/JetBrains/IntelliJ\ IDEA\ Community\ Edition\ 2017.1.3/bin/idea.exe
+    fi
+    cd /mnt/c/code/cryptodash
+  fi
+}
+
 alias crypt='proj_crypt'
 alias cent='cd /mnt/c/code/centurion'
 alias web='cd /mnt/c/code/web/cryptodash'
@@ -71,7 +97,6 @@ fi
 [ -f ~/.config/completion/gradle.bash ] && source ~/.config/completion/gradle.bash
 [ -f ~/.config/completion/tmuxinator.bash ] && source ~/.config/completion/tmuxinator.bash
 
-KERNEL=$(cat /proc/sys/kernel/osrelease 2>/dev/null)
 if [[ "$KERNEL" =~ "Microsoft" ]]; then
   ssh-add -l &>/dev/null
   if [ "$?" == 2 ]; then
