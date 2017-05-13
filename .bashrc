@@ -35,13 +35,19 @@ alias grep='grep --color=auto'
 alias ls='ls --color=auto'
 alias tmux='tmux-next'
 alias aptup='sudo apt-get update && sudo apt-get upgrade'
-alias crypt='cd /mnt/c/code/cryptodash'
+
+function proj_crypt() {
+  cd /mnt/c/code/cryptodash
+}
+alias crypt='proj_crypt'
 alias cent='cd /mnt/c/code/centurion'
 alias web='cd /mnt/c/code/web/cryptodash'
-alias glacier='/mnt/c/code/cryptodash/scripts/glacier_backup.sh'
+alias glacier='bash ./mnt/c/code/cryptodash/scripts/glacier_backup.sh'
+alias mdep='mvn versions:display-dependency-updates'
+alias mplug='mvn versions:display-plugin-updates'
 
 export NVM_DIR="/home/brcolow/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 
 export PATH="/usr/local/bin:/usr/bin:$HOME/bin:/usr/sbin:/sbin:/.local/bin:/bin"
@@ -61,7 +67,6 @@ if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
 fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
 [ -f ~/.config/completion/mvn.bash ] && source ~/.config/completion/mvn.bash
 [ -f ~/.config/completion/gradle.bash ] && source ~/.config/completion/gradle.bash
 [ -f ~/.config/completion/tmuxinator.bash ] && source ~/.config/completion/tmuxinator.bash
