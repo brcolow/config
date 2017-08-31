@@ -1,5 +1,5 @@
 [core]
-    editor = C:/Windows/system32/bash.exe --login -c 'nvim .git/COMMIT_EDITMSG'
+    editor = 'nvim-qt --geometry 1400x900'
 [difftool]
     cmd = 'C:/Program Files (x86)/WinMerge/WinMergeU.exe' \"$LOCAL\" \"$REMOTE\"
 [gpg]
