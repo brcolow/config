@@ -1,5 +1,5 @@
 [core]
-    editor = 'nvim-qt --geometry 1400x900'
+    editor = 'nvim-qt' --geometry 1400x900
 [difftool]
     cmd = 'C:/Program Files (x86)/WinMerge/WinMergeU.exe' \"$LOCAL\" \"$REMOTE\"
 [gpg]
