@@ -40,10 +40,10 @@ else
     if [[ ! -z $YUM ]]; then
         sudo yum install tmux
     elif [[ ! -z $APT ]]; then
-        sudo add-apt-repository ppa:ondrej/php
-        sudo add-apt-repository ppa:pi-rho/dev
-        sudo add-apt-repository ppa:neovim-ppa/unstable
-        sudo apt-add-repository ppa:git-core/ppa
+        sudo add-apt-repository ppa:ondrej/php --yes
+        sudo add-apt-repository ppa:pi-rho/dev --yes
+        sudo add-apt-repository ppa:neovim-ppa/unstable --yes
+        sudo apt-add-repository ppa:git-core/ppa --yes
         sudo apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
         sudo bash -c "echo 'deb https://weechat.org/ubuntu xenial main' >/etc/apt/sources.list.d/weechat.list"
         sudo apt-get update
