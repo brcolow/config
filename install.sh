@@ -8,8 +8,12 @@ while getopts 'f' flag; do
   esac
 done
 
+command_exists () {
+    type "$1" &> /dev/null ;
+}
+
 if [[ "$OSTYPE" == "cygwin" ]]; then
-    BASEDIR="$(cygpath -w $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))"
+    BASEDIR="$(cygpath -w "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")"
 else
     BASEDIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 fi
@@ -27,19 +31,16 @@ echo "Is force install? ${force}"
 
 echo "Checking if base packages have been installed…"
 
+# Really this is a silly way to check if this script has already been run.
 INSTALLED=$(which tmux)
 
 if [ -z "$INSTALLED" ]; then
     echo "Base packages already installed."
 else
     echo "Installing base packages…"
-    YUM=$(which yum)
-    APT=$(which apt-get)
-    PACMAN=$(which pacman)
-
-    if [[ ! -z $YUM ]]; then
+    if command_exists yum ; then
         sudo yum install tmux
-    elif [[ ! -z $APT ]]; then
+    elif command_exists apt-get ; then
         sudo add-apt-repository ppa:ondrej/php --yes
         sudo add-apt-repository ppa:pi-rho/dev --yes
         sudo add-apt-repository ppa:neovim-ppa/unstable --yes
@@ -48,39 +49,14 @@ else
         sudo bash -c "echo 'deb https://weechat.org/ubuntu xenial main' >/etc/apt/sources.list.d/weechat.list"
         sudo apt-get update
         sudo apt-get install build-essential libtool libtool-bin ninja-build autoconf pkg-config php7.1 python-pip jq libsecret-1-0 libsecret-1-dev libpcre3-dev cabal-install zlib1g-dev liblzma-dev cmake git neovim tmux-next xsel clang libclang-dev python3-pip zbar-tools weechat-devel-curses weechat-devel-plugins
-    elif [[ ! -z $PACMAN ]]; then
+    elif command_exists pacman ; then
         sudo pacman -S
     else
         echo "✘ Could not determine which package manager to use - skipping install of base packages."
     fi
-    echo set bell-style none >> ~/.inputrc
-    mkdir -p ~/dev
-    cd ~/dev
-    echo "Building and installing universal-ctags…"
-    git clone https://github.com/universal-ctags/ctags.git --depth 1
-    cd ctags
-    ./autogen.sh
-    ./configure
-    make
-    sudo make install
-
-    cd ~/dev
-    echo "Building and installing silver searcher…"
-    git clone https://github.com/ggreer/the_silver_searcher.git --depth 1
-    cd the_silver_searcher/
-    ./build.sh
-    sudo make install
-
-    cd ~/dev
-    echo "Building and installing pigz (parallel gzip)…"
-    wget http://zlib.net/pigz/pigz-2.3.4.tar.gz
-    tar xvf pigz-2.3.4.tar.gz
-    cd pigz-2.3.4
-    make
-    sudo ln -s -f ~/dev/pigz /usr/local/bin
 
     echo "Building libsecret for git-credential store…"
-    cd /usr/share/doc/git/contrib/credential/libsecret
+    cd /usr/share/doc/git/contrib/credential/libsecret | exit
     sudo make
 
     if [[ "$KERNEL" =~ "Microsoft" ]]; then
@@ -88,14 +64,7 @@ else
         sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /etc/dbus-1/session.conf
     fi
 
-    cd ~/dev
-    echo "Building and installing shellcheck…"
-    git clone https://github.com/koalaman/shellcheck.git --depth 1
-    cd shellcheck
-    cabal install
-    sudo ln -s -f ~/.cabal/shellcheck /usr/local/bin
-
-    mkdir ~/.config/completion
+    mkdir -p ~/.config/completion
     wget --quiet --output-document=~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
     wget --quiet --output-document=~/.config/completion/gradle.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
 
@@ -107,6 +76,59 @@ else
     sudo gem install tmuxinator
     wget --quiet --output-document=~/.config/completion/tmuxinator.bash https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.bash
     wget --quiet --output-document=~/.config/completion/mvn.bash https://raw.githubusercontent.com/juven/maven-bash-completion/master/bash_completion.bash
+fi
+
+if ! grep -Fxq "set bell-style none" ~/.inputrc ; then
+    echo set bell-style none >> ~/.inputrc
+fi
+
+mkdir -p ~/dev
+
+if command_exists ctags ; then
+    echo "✔ ctags installed"
+else
+    cd ~/dev | exit
+    echo "No ctags installation found, installing ctags…"
+    git clone https://github.com/universal-ctags/ctags.git --depth 1
+    cd ctags | exit
+    ./autogen.sh
+    ./configure
+    make
+    sudo make install
+fi
+
+if command_exists ag ; then
+    echo "✔ silver_searcher installed"
+else
+    cd ~/dev | exit
+    echo "Building and installing silver searcher…"
+    git clone https://github.com/ggreer/the_silver_searcher.git --depth 1
+    cd the_silver_searcher/ | exit
+    ./build.sh
+    sudo make install
+fi
+
+if command_exists pigz ; then
+    echo "✔ parallel gzip installed"
+else
+    cd ~/dev | exit
+    echo "Building and installing pigz (parallel gzip)…"
+    wget http://zlib.net/pigz/pigz-2.3.4.tar.gz
+    tar xvf pigz-2.3.4.tar.gz
+    cd pigz-2.3.4 | exit
+    make
+    sudo ln -s -f ~/dev/pigz /usr/local/bin
+fi
+
+if command_exists shellcheck ; then
+    echo "✔ shellcheck installed"
+else
+    cd ~/dev | exit
+    echo "Building and installing shellcheck…"
+    git clone https://github.com/koalaman/shellcheck.git --depth 1
+    cd shellcheck | exit
+    cabal install
+    sudo ln -s -f ~/.cabal/shellcheck /usr/local/bin
 fi
 
 echo "Checking if powerline fonts are installed…"
