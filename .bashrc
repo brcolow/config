@@ -16,8 +16,24 @@ shopt -s histappend
 export HISTSIZE=-1
 export HISTFILESIZE=-1
 
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-searchforward'
+if [[ $- == *i* ]]
+then
+    bind '"\e[A": history-search-backward'
+    bind '"\e[B": history-searchforward'
+
+    # ssh-agent configuration
+    if [ -z "$(pgrep ssh-agent)" ]; then
+        rm -rf /tmp/ssh-*
+        eval $(ssh-agent -s) > /dev/null
+    else
+        export SSH_AGENT_PID=$(pgrep ssh-agent)
+        export SSH_AUTH_SOCK=$(find /tmp/ssh-* -name agent.*)
+    fi
+
+    if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
+        ssh-add
+    fi
+fi
 
 eval `dircolors /home/brcolow/.dir_colors`
 
@@ -79,18 +95,6 @@ export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 export PATH="/usr/local/bin:/usr/bin:$HOME/bin:/usr/sbin:/sbin:/.local/bin:/bin"
 export PATH="$HOME/.cabal/bin:$PATH"
 
-# ssh-agent configuration
-if [ -z "$(pgrep ssh-agent)" ]; then
-    rm -rf /tmp/ssh-*
-    eval $(ssh-agent -s) > /dev/null
-else
-    export SSH_AGENT_PID=$(pgrep ssh-agent)
-    export SSH_AUTH_SOCK=$(find /tmp/ssh-* -name agent.*)
-fi
-
-if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
-    ssh-add
-fi
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 [ -f ~/.config/completion/mvn.bash ] && source ~/.config/completion/mvn.bash
