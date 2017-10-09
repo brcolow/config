@@ -18,7 +18,7 @@
     export = archive -o latest.tar.gz -9 --prefix=latest/
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
     fixup = "!sh -c '(git diff-files --quiet || (echo Unstaged changes, please commit or stash with --keep-index; exit 1)) && COMMIT=$(git rev-parse $1) && git commit --fixup=$COMMIT && git rebase -i --autosquash $COMMIT~1' -"
-	quick-stats = ! /usr/local/bin/git-quick-stats
+    quick-stats = ! /usr/local/bin/git-quick-stats
 [color]
     ; ui = always
 ; [color "diff"]
@@ -31,8 +31,8 @@
 ; [color "diff-highlight"]
     ; oldNormal = red bold
     ; oldHighlight = "red bold 52"
-	; newNormal = "green bold"
-	; newHighlight = "green bold 22"
+    ; newNormal = "green bold"
+    ; newHighlight = "green bold 22"
 ; [color "branch"]
     ; current = bold white green
     ; local = bold yellow
@@ -42,6 +42,8 @@
 [github]
     user = brcolow
 [rebase]
-	autosquash = true
+    autosquash = true
 [credential]
-	helper = /usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
+    helper = /usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
+[branch]
+    autosetuprebase = always
