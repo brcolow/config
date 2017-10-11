@@ -8,7 +8,7 @@ if !has('nvim')
 else
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
   set termguicolors
-  let g:python3_host_prog = '/usr/bin/python3'
+  let g:python3_host_prog = '/usr/local/bin/python3'
 endif
 
 set shortmess+=c
@@ -216,12 +216,7 @@ call plug#begin(s:vim_dir . '/bundle')
     Plug 'mattn/vim-textobj-url' " (u)rl
 call plug#end()
 
-if has('mac')
-    set background=light " or dark
-    colorscheme solarized
-else
-    colorscheme onedark
-endif
+colorscheme onedark
 
 nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 

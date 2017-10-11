@@ -43,7 +43,5 @@
     user = brcolow
 [rebase]
     autosquash = true
-[credential]
-    helper = /usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
 [branch]
     autosetuprebase = always

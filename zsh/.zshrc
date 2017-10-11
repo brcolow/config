@@ -4,9 +4,14 @@ export EDITOR=nvim
 export LANG=en_US.UTF-8
 export GOPATH="$HOME/.go"
 export PATH=$PATH:$GOPATH/bin
+export ZPLUG_HOME=/usr/local/opt/zplug
+source $ZPLUG_HOME/init.zsh
 
-source ~/.zplug/init.zsh
-POWERLEVEL9K_MODE='awesome-fontconfig'
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    POWERLEVEL9K_MODE='awesome-patched'
+else
+    POWERLEVEL9K_MODE='awesome-fontconfig'
+fi
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
 POWERLEVEl9K_RIGHT_PROMPT_ELEMENTS=(status time)
 POWERLEVEL9K_COLOR_SCHEME='light'
@@ -33,7 +38,7 @@ if ! zplug check --verbose; then
 fi
 
 # Then, source plugins and add commands to $PATH
-zplug load --verbose
+zplug load
 
 autoload -Uz compinit
 compinit

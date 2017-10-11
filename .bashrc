@@ -49,7 +49,7 @@ if ! shopt -oq posix; then
 fi
 
 alias grep='grep --color=auto'
-alias ls='ls --color=auto'
+# alias ls='ls --color=auto'
 alias tmux='tmux-next'
 alias aptup='sudo apt-get update && sudo apt-get upgrade'
 
@@ -94,7 +94,6 @@ export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 
 export PATH="/usr/local/bin:/usr/bin:$HOME/bin:/usr/sbin:/sbin:/.local/bin:/bin"
 export PATH="$HOME/.cabal/bin:$PATH"
-
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 [ -f ~/.config/completion/mvn.bash ] && source ~/.config/completion/mvn.bash
