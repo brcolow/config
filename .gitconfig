@@ -17,8 +17,7 @@
 [alias]
     export = archive -o latest.tar.gz -9 --prefix=latest/
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-    fixup = "!sh -c '(git diff-files --quiet || (echo Unstaged changes, please commit or stash with --keep-index; exit 1)) && COMMIT=$(git rev-parse $1) && git commit --fixup=$COMMIT && git rebase -i --autosquash $COMMIT~1' -"
-    quick-stats = ! /usr/local/bin/git-quick-stats
+    exe = "!git add --chmod=+x \"$1\""
 [color]
     ; ui = always
 ; [color "diff"]
