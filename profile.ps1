@@ -1,3 +1,4 @@
+$MaximumHistoryCount = 2048
 $config = resolve-path ~/config
 $env:Path += ";$config\ps"
 

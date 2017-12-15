@@ -18,6 +18,9 @@
     export = archive -o latest.tar.gz -9 --prefix=latest/
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
     exe = "!git add --chmod=+x \"$1\""
+    fum = fetch upstream master
+    rum = rebase upstream master
+    pof = push origin --force-with-lease
 [color]
     ; ui = always
 ; [color "diff"]
