@@ -47,3 +47,4 @@
     autosquash = true
 [branch]
     autosetuprebase = always
+

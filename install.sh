@@ -193,10 +193,14 @@ else
     # Git
     ln -sf ${BASEDIR}/.gitconfig ~/.gitconfig
     ln -sf ${BASEDIR}/.gitexcludes ~/.gitexcludes
-    if [[ "$OSTYPE" == "linux-gnu" ]]; then
-        ln -sf ${BASEDIR}/gitconfig.nix.local ~/.gitconfig.local
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        ln -sf ${BASEDIR}/gitconfig.mac.local ~/.gitconfig.local
+    if [[ "$KERNEL" =~ "Microsoft" ]]; then
+        ln -sf ${BASEDIR}/gitconfig.wsl.local ~/.gitconfig.local
+    else
+        if [[ "$OSTYPE" == "linux-gnu" ]]; then
+            ln -sf ${BASEDIR}/gitconfig.nix.local ~/.gitconfig.local
+        elif [[ "$OSTYPE" == "darwin"* ]]; then
+            ln -sf ${BASEDIR}/gitconfig.mac.local ~/.gitconfig.local
+        fi
     fi
 
     ln -sf ${BASEDIR}/.bashrc ~/.bashrc
@@ -204,3 +208,4 @@ else
 fi
 
 echo "✔ Dotfile links created"
+
