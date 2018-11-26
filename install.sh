@@ -41,14 +41,13 @@ else
     if command_exists yum ; then
         sudo yum install tmux
     elif command_exists apt-get ; then
-        sudo add-apt-repository ppa:ondrej/php --yes
         sudo add-apt-repository ppa:pi-rho/dev --yes
         sudo add-apt-repository ppa:neovim-ppa/unstable --yes
         sudo apt-add-repository ppa:git-core/ppa --yes
         sudo apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
         sudo bash -c "echo 'deb https://weechat.org/ubuntu xenial main' >/etc/apt/sources.list.d/weechat.list"
         sudo apt-get update
-        sudo apt-get install build-essential libtool libtool-bin ninja-build autoconf pkg-config php7.1 python-pip jq libsecret-1-0 libsecret-1-dev libpcre3-dev cabal-install zlib1g-dev liblzma-dev cmake git neovim tmux-next xsel clang libclang-dev python3-pip zbar-tools weechat-devel-curses weechat-devel-plugins
+        sudo apt-get install build-essential libtool libtool-bin ninja-build autoconf pkg-config python-pip jq libsecret-1-0 libsecret-1-dev libpcre3-dev cabal-install zlib1g-dev liblzma-dev cmake git neovim tmux-next xsel clang libclang-dev python3-pip zbar-tools weechat-devel-curses weechat-devel-plugins
     elif command_exists pacman ; then
         sudo pacman -S
     else
@@ -65,8 +64,8 @@ else
     fi
 
     mkdir -p ~/.config/completion
-    wget --quiet --output-document=~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
-    wget --quiet --output-document=~/.config/completion/gradle.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
+    wget --quiet -O ~/.dir_colors https://raw.githubusercontent.com/seebi/dircolors-solarized/master/dircolors.256dark
+    wget --quiet -O ~/.config/completion/gradle.bash https://gist.github.com/brcolow/381b108970fac4887a03d9af6ef61088/raw/gradle-tab-completion.bash
 
     sudo pip install --upgrade pip
     sudo pip3 install --upgrade pip3
@@ -76,11 +75,12 @@ else
 
     sudo gem update --system
     sudo gem install tmuxinator
-    wget --quiet --output-document=~/.config/completion/tmuxinator.bash https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.bash
-    wget --quiet --output-document=~/.config/completion/mvn.bash https://raw.githubusercontent.com/juven/maven-bash-completion/master/bash_completion.bash
+    wget --quiet -O ~/.config/completion/tmuxinator.bash https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.bash
+    wget --quiet -O ~/.config/completion/mvn.bash https://raw.githubusercontent.com/juven/maven-bash-completion/master/bash_completion.bash
 fi
 
 if ! grep -Fxq "set bell-style none" ~/.inputrc ; then
+    touch ~/.inputrc
     echo set bell-style none >> ~/.inputrc
 fi
 

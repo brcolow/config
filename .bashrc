@@ -50,7 +50,6 @@ fi
 
 alias grep='grep --color=auto'
 # alias ls='ls --color=auto'
-alias tmux='tmux-next'
 alias aptup='sudo apt-get update && sudo apt-get upgrade'
 
 function return_error() {
